@@ -225,3 +225,328 @@
   background: #c8e6c9;
   transform: translateY(-2px);
 }
+
+/* 语法卡样式 */
+.study-card__grammar {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.grammar-pattern {
+  font-size: 24px;
+  color: #1976d2;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.grammar-title {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.grammar-meaning {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.grammar-explanation {
+  font-size: 14px;
+  color: #777;
+  line-height: 1.5;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* 图片卡样式 */
+.study-card__image {
+  margin-bottom: 16px;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 120px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #666;
+  border: 2px dashed #ddd;
+}
+
+/* 音频卡样式 */
+.study-card__audio {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.audio-title {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.audio-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.audio-play-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.audio-play-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.audio-placeholder {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 16px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+/* 选择题样式 */
+.study-card__choices {
+  margin: 20px 0;
+}
+
+.choices-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.choices-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.choice-button {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Noto Sans JP', sans-serif;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.choice-button:hover:not(:disabled) {
+  border-color: #2196f3;
+  background: #f3f8ff;
+}
+
+.choice-button.selected {
+  border-color: #2196f3;
+  background: #e3f2fd;
+}
+
+.choice-button.correct {
+  border-color: #4caf50;
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.choice-button.incorrect {
+  border-color: #f44336;
+  background: #ffebee;
+  color: #c62828;
+}
+
+.choice-button:disabled {
+  cursor: not-allowed;
+}
+
+.result-message {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.example-title {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Tooltip样式 */
+.tooltip {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  max-width: 200px;
+  text-align: center;
+  word-break: break-all;
+  animation: fadeIn 0.2s ease-in;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tooltip-trigger {
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.tooltip-trigger:hover {
+  color: #2196f3;
+}
+
+/* 拖拽拼句卡样式 */
+.study-card__arrange {
+  text-align: center;
+}
+
+.arrange-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.arrange-target {
+  margin-bottom: 20px;
+}
+
+.arrange-chinese {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #2196f3;
+}
+
+.arrange-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+  min-height: 60px;
+  padding: 12px;
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.arrange-word {
+  background: #2196f3;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: grab;
+  user-select: none;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+}
+
+.arrange-word:hover {
+  background: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.4);
+}
+
+.arrange-word:active {
+  cursor: grabbing;
+}
+
+.arrange-word.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+}
+
+.arrange-sentence {
+  font-size: 20px;
+  color: #333;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.check-arrangement-button {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.check-arrangement-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.arrange-result {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}

@@ -105,6 +105,152 @@ export const cardData: CardData[] = [
     example_jp: '学校に行きます。',
     example_cn: '去学校。',
     jlpt: 'N5'
+  },
+  // 例句卡
+  {
+    id: 'e001',
+    type: 'example',
+    jp: '部屋が明るいです。',
+    kana: 'へやがあかるいです。',
+    romaji: 'heya ga akarui desu.',
+    cn: '房间很明亮。',
+    jlpt: 'N5'
+  },
+  {
+    id: 'e002',
+    type: 'example',
+    jp: '今日はいい天気ですね。',
+    kana: 'きょうはいいてんきですね。',
+    romaji: 'kyou wa ii tenki desu ne.',
+    cn: '今天天气真好呢。',
+    jlpt: 'N5'
+  },
+  {
+    id: 'e003',
+    type: 'example',
+    jp: '母は料理を作っています。',
+    kana: 'はははりょうりをつくっています。',
+    romaji: 'haha wa ryouri wo tsukutte imasu.',
+    cn: '妈妈在做料理。',
+    jlpt: 'N5'
+  },
+  // 语法卡
+  {
+    id: 'g001',
+    type: 'grammar',
+    jp: '〜ている',
+    cn: '进行状态',
+    grammar_pattern: 'V-ている',
+    grammar_explanation: '表示动作正在进行或状态的持续',
+    example_jp: '今、勉強しています。',
+    example_cn: '现在正在学习。',
+    jlpt: 'N5'
+  },
+  {
+    id: 'g002',
+    type: 'grammar',
+    jp: '〜たことがある',
+    cn: '有过...的经历',
+    grammar_pattern: 'V-たことがある',
+    grammar_explanation: '表示过去的经历或体验',
+    example_jp: '日本に行ったことがあります。',
+    example_cn: '我去过日本。',
+    jlpt: 'N4'
+  },
+  {
+    id: 'g003',
+    type: 'grammar',
+    jp: '〜と思います',
+    cn: '我觉得...',
+    grammar_pattern: 'V/Adj+と思います',
+    grammar_explanation: '表示自己的想法或意见',
+    example_jp: 'この映画は面白いと思います。',
+    example_cn: '我觉得这部电影很有趣。',
+    jlpt: 'N4'
+  },
+  // 图片卡
+  {
+    id: 'i001',
+    type: 'image',
+    jp: '食べ物',
+    kana: 'たべもの',
+    romaji: 'tabemono',
+    cn: '食物',
+    image_path: 'assets/images/food_01.empty.jpg',
+    jlpt: 'N5'
+  },
+  {
+    id: 'i002',
+    type: 'image',
+    jp: '学校',
+    kana: 'がっこう',
+    romaji: 'gakkou',
+    cn: '学校',
+    image_path: 'assets/images/school_01.empty.jpg',
+    jlpt: 'N5'
+  },
+  {
+    id: 'i003',
+    type: 'image',
+    jp: '天気',
+    kana: 'てんき',
+    romaji: 'tenki',
+    cn: '天气',
+    image_path: 'assets/images/weather_01.empty.jpg',
+    jlpt: 'N5'
+  },
+  // 音频卡
+  {
+    id: 'a001',
+    type: 'audio',
+    jp: '音声練習',
+    cn: '音频练习',
+    audio_path: 'assets/audio/word_01.empty.mp3',
+    choices: ['あかるい', 'あかりい', 'あかるび', 'あかるし'],
+    correct_answer: 'あかるい',
+    example_jp: '部屋が明るいです。',
+    example_cn: '房间很明亮。',
+    jlpt: 'N5'
+  },
+  {
+    id: 'a002',
+    type: 'audio',
+    jp: '発音練習',
+    cn: '发音练习',
+    audio_path: 'assets/audio/sentence_01.empty.mp3',
+    choices: ['ともだち', 'ともたち', 'とのだち', 'ともらち'],
+    correct_answer: 'ともだち',
+    example_jp: '友達と映画を見ました。',
+    example_cn: '和朋友一起看了电影。',
+    jlpt: 'N5'
+  },
+  // 拖拽拼句卡
+  {
+    id: 'ar001',
+    type: 'arrange',
+    jp: '私は学校に行きます。',
+    cn: '我去学校。',
+    words_to_arrange: ['私は', '学校に', '行きます', '。'],
+    correct_order: [0, 1, 2, 3],
+    jlpt: 'N5'
+  },
+  {
+    id: 'ar002',
+    type: 'arrange',
+    jp: 'これは美味しいケーキです。',
+    cn: '这是好吃的蛋糕。',
+    words_to_arrange: ['これは', '美味しい', 'ケーキです', '。'],
+    correct_order: [0, 1, 2, 3],
+    jlpt: 'N5'
+  },
+  {
+    id: 'ar003',
+    type: 'arrange',
+    jp: '友達と映画を見ました。',
+    cn: '和朋友一起看了电影。',
+    words_to_arrange: ['友達と', '映画を', '見ました', '。'],
+    correct_order: [0, 1, 2, 3],
+    jlpt: 'N5'
   }
 ];
 

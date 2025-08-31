@@ -265,21 +265,55 @@ describe('cardData', () => {
     
     cardData.forEach(card => {
       expect(card.id).toBeDefined();
-      expect(card.type).toMatch(/^(word|sentence)$/);
+      expect(card.type).toMatch(/^(word|sentence|example|grammar|image|audio|arrange)$/);
       expect(card.jp).toBeDefined();
-      expect(card.kana).toBeDefined();
-      expect(card.romaji).toBeDefined();
       expect(card.cn).toBeDefined();
       expect(card.jlpt).toBeDefined();
+      
+      // kana 和 romaji 对于某些类型是可选的
+      if (card.type === 'word' || card.type === 'sentence' || card.type === 'example' || card.type === 'image') {
+        expect(card.kana).toBeDefined();
+        expect(card.romaji).toBeDefined();
+      }
+      
+      // 检查特殊字段
+      if (card.type === 'grammar') {
+        expect(card.grammar_pattern || card.grammar_explanation).toBeTruthy();
+      }
+      
+      if (card.type === 'image') {
+        expect(card.image_path).toBeDefined();
+      }
+      
+      if (card.type === 'audio') {
+        expect(card.audio_path).toBeDefined();
+        expect(card.choices).toBeDefined();
+        expect(card.correct_answer).toBeDefined();
+      }
+      
+      if (card.type === 'arrange') {
+        expect(card.words_to_arrange).toBeDefined();
+        expect(card.correct_order).toBeDefined();
+      }
     });
   });
 
-  it('contains both words and sentences', () => {
+  it('contains different types of cards', () => {
     const words = cardData.filter(card => card.type === 'word');
     const sentences = cardData.filter(card => card.type === 'sentence');
+    const examples = cardData.filter(card => card.type === 'example');
+    const grammars = cardData.filter(card => card.type === 'grammar');
+    const images = cardData.filter(card => card.type === 'image');
+    const audios = cardData.filter(card => card.type === 'audio');
+    const arranges = cardData.filter(card => card.type === 'arrange');
     
     expect(words.length).toBeGreaterThan(0);
     expect(sentences.length).toBeGreaterThan(0);
+    expect(examples.length).toBeGreaterThan(0);
+    expect(grammars.length).toBeGreaterThan(0);
+    expect(images.length).toBeGreaterThan(0);
+    expect(audios.length).toBeGreaterThan(0);
+    expect(arranges.length).toBeGreaterThan(0);
   });
 
   it('has unique card IDs', () => {
