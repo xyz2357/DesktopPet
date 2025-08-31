@@ -76,7 +76,7 @@ export const AppConfig = {
         /** 是否启用随机选择 */
         enabled: true,
         /** 每个状态切换时都重新选择 */
-        changeOnStateSwitch: false,
+        changeOnStateSwitch: true,
         /** 定时随机切换间隔 (ms)，0表示不定时切换 */
         autoChangeInterval: 0
       },

@@ -6,9 +6,9 @@
   user-select: none;
 }
 
-.pet:hover:not(.pet--dragging) {
+/* .pet:hover:not(.pet--dragging) {
   transform: scale(1.1);
-}
+} */
 
 .pet--dragging {
   cursor: grabbing;
@@ -61,11 +61,11 @@
   animation: pulse 2s infinite;
 }
 
-.pet--hover .pet__emoji,
+/* .pet--hover .pet__emoji,
 .pet--hover .pet__image,
 .pet--hover .pet__video {
   transform: rotate(15deg);
-}
+} */
 
 .pet__bubble {
   position: absolute;
