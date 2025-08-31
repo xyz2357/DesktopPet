@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import App from '../App';
-import { mockElectronAPI } from '../setupTests';
-import { CardData } from '../types/card';
+import App from '../../src/App';
+import { mockElectronAPI } from '../../src/setupTests';
+import { CardData } from '../../src/types/card';
 
 const mockCard: CardData = {
   id: 'test-card-1',

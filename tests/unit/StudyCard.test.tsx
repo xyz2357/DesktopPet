@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import StudyCard from '../StudyCard';
-import { CardData } from '../../types/card';
+import StudyCard from '../../src/components/StudyCard';
+import { CardData } from '../../src/types/card';
 
 const mockCard: CardData = {
   id: 'test-card-1',

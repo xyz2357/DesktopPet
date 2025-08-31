@@ -1,0 +1,75 @@
+/* CSS自定义属性 - 便于主题切换和维护 */
+:root {
+  /* 颜色系统 */
+  --color-primary: #2196f3;
+  --color-primary-hover: #1976d2;
+  --color-success: #4caf50;
+  --color-success-hover: #45a049;
+  --color-warning: #ff9800;
+  --color-warning-hover: #f57c00;
+  --color-error: #f44336;
+  --color-error-hover: #d32f2f;
+
+  /* 背景色 */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-overlay: rgba(0, 0, 0, 0.05);
+  --color-bg-tooltip: rgba(0, 0, 0, 0.8);
+
+  /* 文字颜色 */
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #666666;
+  --color-text-muted: #999999;
+  --color-text-white: #ffffff;
+
+  /* 边框和分割线 */
+  --color-border: #e0e0e0;
+  --color-border-hover: #2196f3;
+  --color-divider: #eeeeee;
+
+  /* 间距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-xxl: 24px;
+
+  /* 字体大小 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 24px;
+  --font-size-jumbo: 32px;
+
+  /* 边框半径 */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 50%;
+
+  /* 阴影 */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+
+  /* 动画时长 */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+
+  /* Z-index分层 */
+  --z-index-tooltip: 1001;
+  --z-index-modal: 1000;
+  --z-index-overlay: 999;
+  --z-index-dropdown: 100;
+
+  /* 字体 */
+  --font-family-japanese: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  --font-family-chinese: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-family-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}

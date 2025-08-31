@@ -141,7 +141,7 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
     
     // 1.5秒后自动提交答案
     audioTimerRef.current = setTimeout(() => {
-      const isCorrect = choice === card.correct_answer;
+      const isCorrect = card.type === 'audio' && choice === card.correct_answer;
       onAnswer(isCorrect ? 'know' : 'unknown');
       audioTimerRef.current = null; // 清理引用
     }, 1500);
@@ -191,9 +191,9 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
   };
 
   const handleCheckArrangement = () => {
-    if (!card.words_to_arrange || !card.correct_order) return;
+    if (card.type !== 'arrange') return;
     
-    const correctSequence = card.correct_order.map(index => card.words_to_arrange![index]);
+    const correctSequence = card.correct_order.map((index: number) => card.words_to_arrange[index]);
     const isCorrect = JSON.stringify(arrangedWords) === JSON.stringify(correctSequence);
     
     setArrangeResult({ show: true, isCorrect });

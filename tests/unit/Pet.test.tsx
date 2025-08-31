@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Pet from '../Pet';
+import Pet from '../../src/components/Pet';
 
 const mockProps = {
   onClick: jest.fn(),

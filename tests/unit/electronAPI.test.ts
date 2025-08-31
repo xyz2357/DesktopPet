@@ -1,5 +1,5 @@
-import { mockElectronAPI } from '../../setupTests';
-import { CardData } from '../../types/card';
+import { mockElectronAPI } from '../../src/setupTests';
+import { CardData } from '../../src/types/card';
 
 const mockCard: CardData = {
   id: 'test-card-1',
