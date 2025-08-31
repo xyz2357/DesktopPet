@@ -1,7 +1,6 @@
 .pet {
   position: absolute;
-  width: 120px;
-  height: 120px;
+  /* 动态尺寸将通过内联样式设置 */
   cursor: pointer;
   transition: all 0.3s ease;
   user-select: none;
@@ -17,23 +16,54 @@
   z-index: 9999;
 }
 
+.pet__avatar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .pet__emoji {
-  font-size: 64px;
+  /* 字体大小和行高将通过内联样式动态设置 */
   text-align: center;
-  line-height: 120px;
   user-select: none;
   transition: transform 0.3s ease;
 }
 
-.pet--loading .pet__emoji {
+.pet__image,
+.pet__video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  transition: transform 0.3s ease;
+  border-radius: 8px;
+}
+
+.pet__video::-webkit-media-controls {
+  display: none !important;
+}
+
+.pet__video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+.pet--loading .pet__emoji,
+.pet--loading .pet__image,
+.pet--loading .pet__video {
   animation: bounce 1s infinite;
 }
 
-.pet--active .pet__emoji {
+.pet--active .pet__emoji,
+.pet--active .pet__image,
+.pet--active .pet__video {
   animation: pulse 2s infinite;
 }
 
-.pet--hover .pet__emoji {
+.pet--hover .pet__emoji,
+.pet--hover .pet__image,
+.pet--hover .pet__video {
   transform: rotate(15deg);
 }
 

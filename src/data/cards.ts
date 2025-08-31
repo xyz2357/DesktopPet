@@ -1,4 +1,5 @@
 import { CardData } from '../types/card';
+import { LearningConfig } from '../config/appConfig';
 import { allCards, cardsByType, getRandomCard, getRelatedCards } from './cards/index';
 
 // 导出所有卡片数据（向后兼容）
@@ -48,22 +49,22 @@ export class CardManager {
       case 'unknown':
         // 不会的卡片加入复习池，增加复习频率
         this.reviewPool.push(card);
-        if (Math.random() < 0.5) {
-          this.reviewPool.push(card); // 50%概率再加一次
+        if (Math.random() < LearningConfig.cards.errorRetryProbability) {
+          this.reviewPool.push(card);
         }
         break;
       case 'later':
         // 稍后的卡片延迟一段时间后再次出现
         setTimeout(() => {
           this.reviewPool.push(card);
-        }, 5 * 60 * 1000); // 5分钟后再次出现
+        }, LearningConfig.cards.errorRetryDelay);
         break;
       case 'know':
         // 会了的卡片减少出现频率，但仍会偶尔复习
-        if (Math.random() < 0.2) {
+        if (Math.random() < LearningConfig.cards.reviewProbability) {
           setTimeout(() => {
             this.reviewPool.push(card);
-          }, 30 * 60 * 1000); // 30分钟后20%概率复习
+          }, LearningConfig.cards.reviewDelay);
         }
         break;
     }

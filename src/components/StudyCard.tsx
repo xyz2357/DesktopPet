@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CardData } from '../types/card';
+import { StudyCardConfig } from '../config/appConfig';
 import './StudyCard.css';
 
 interface StudyCardProps {
@@ -144,7 +145,7 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
       const isCorrect = card.type === 'audio' && choice === card.correct_answer;
       onAnswer(isCorrect ? 'know' : 'unknown');
       audioTimerRef.current = null; // 清理引用
-    }, 1500);
+    }, StudyCardConfig.autoSubmitDelay.audio);
   };
 
   // 处理鼠标悬停显示提示
@@ -154,7 +155,7 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
       show: true,
       content,
       x: rect.left + rect.width / 2,
-      y: rect.top - 10
+      y: rect.top + StudyCardConfig.tooltip.verticalOffset
     });
   };
 
@@ -207,7 +208,7 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
     arrangeTimerRef.current = setTimeout(() => {
       onAnswer(isCorrect ? 'know' : 'unknown');
       arrangeTimerRef.current = null; // 清理引用
-    }, 2000);
+    }, StudyCardConfig.autoSubmitDelay.arrange);
   };
 
   // 点击overlay关闭
@@ -478,7 +479,7 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
             top: tooltip.y,
             transform: 'translateX(-50%) translateY(-100%)',
             pointerEvents: 'none',
-            zIndex: 1001
+            zIndex: StudyCardConfig.tooltip.zIndex
           }}
         >
           {tooltip.content}

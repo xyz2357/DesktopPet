@@ -3,6 +3,8 @@ module.exports = {
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(png|jpg|jpeg|gif|svg|webp)$': '<rootDir>/tests/utils/mockImage.js',
+    '\\.(mp4|webm|ogg|avi|mov)$': '<rootDir>/tests/utils/mockVideo.js',
   },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',

@@ -178,3 +178,36 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
+
+# Media Files
+# Large media files should generally not be committed to git
+# Uncomment the lines below if you want to ignore large media files
+# and use Git LFS or external storage instead
+
+# Large video files (>10MB typically)
+# *.mp4
+# *.webm
+# *.avi
+# *.mov
+# *.mkv
+
+# Large image files
+# *.psd
+# *.ai
+# *.tiff
+# *.tif
+
+# Keep small placeholder/test media files
+!src/assets/pet-media/**/*.png
+!src/assets/pet-media/**/*.jpg
+!src/assets/pet-media/**/*.jpeg
+!src/assets/pet-media/**/*.gif
+!src/assets/pet-media/**/*.webp
+!src/assets/pet-media/**/*.mp4
+!src/assets/pet-media/**/*.webm
+
+# But ignore large actual media files if they exceed certain size
+# You can use git-lfs for these instead
+# src/assets/pet-media/**/*
+# !src/assets/pet-media/README.md
+# !src/assets/pet-media/**/*.placeholder

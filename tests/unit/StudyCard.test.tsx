@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StudyCard from '../../src/components/StudyCard';
 import { CardData } from '../../src/types/card';
+import { StudyCardConfig } from '../../src/config/appConfig';
 
 const mockCard: CardData = {
   id: 'test-card-1',

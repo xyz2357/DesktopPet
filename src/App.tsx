@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Pet from './components/Pet';
 import StudyCard from './components/StudyCard';
 import { CardData } from './types/card';
+import { LearningConfig } from './config/appConfig';
 import './App.css';
 
 const App: React.FC = () => {
@@ -82,7 +83,7 @@ const App: React.FC = () => {
       if (!showCard) {
         fetchNewCard();
       }
-    }, 60000); // 60秒
+    }, LearningConfig.reminder.interval);
 
     return () => clearInterval(interval);
   }, [showCard]);

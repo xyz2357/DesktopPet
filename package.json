@@ -18,7 +18,8 @@
     "test:unit": "jest --testPathPattern=__tests__ --verbose",
     "test:integration": "jest --testPathPattern=integration --verbose", 
     "test:all": "npm run test:unit && npm run test:coverage && npm run test:e2e",
-    "test:ci": "jest --coverage --watchAll=false --ci"
+    "test:ci": "jest --coverage --watchAll=false --ci",
+    "generate:placeholders": "node scripts/generatePlaceholders.js"
   },
   "keywords": [],
   "author": "",

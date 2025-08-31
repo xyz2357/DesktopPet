@@ -79,6 +79,20 @@ const rendererConfig = {
       {
         test: /\.json$/,
         type: 'json'
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg|webp)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext]'
+        }
+      },
+      {
+        test: /\.(mp4|webm|ogg|avi|mov)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'videos/[name][ext]'
+        }
       }
     ]
   },

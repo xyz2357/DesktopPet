@@ -1,4 +1,5 @@
 import { CardData } from '../../types/card';
+import { LearningConfig } from '../../config/appConfig';
 
 // 导入所有卡片数据
 import wordsData from './words.json';
@@ -115,7 +116,7 @@ export function getRandomCard(type?: string, jlpt?: string): CardData {
 }
 
 // 获取相关卡片（基于标签、类别等）
-export function getRelatedCards(card: CardData, limit: number = 5): CardData[] {
+export function getRelatedCards(card: CardData, limit: number = LearningConfig.cards.relatedCardsLimit): CardData[] {
   const related: CardData[] = [];
   
   // 同类型的卡片
@@ -127,7 +128,8 @@ export function getRelatedCards(card: CardData, limit: number = 5): CardData[] {
   const sameJLPTFiltered = sameJLPT.filter(c => c.id !== card.id && c.type !== card.type);
   
   // 合并结果，优先同类型
-  related.push(...sameTypeFiltered.slice(0, Math.floor(limit / 2)));
+  const sameTypeLimit = Math.floor(limit * LearningConfig.cards.sameTypeRatio);
+  related.push(...sameTypeFiltered.slice(0, sameTypeLimit));
   related.push(...sameJLPTFiltered.slice(0, limit - related.length));
   
   return related.slice(0, limit);

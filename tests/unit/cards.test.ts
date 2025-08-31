@@ -1,5 +1,6 @@
 import { CardManager, cardData } from '../../src/data/cards';
 import { CardData } from '../../src/types/card';
+import { LearningConfig } from '../../src/config/appConfig';
 
 const mockCard: CardData = {
   id: 'test-card-1',

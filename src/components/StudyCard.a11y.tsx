@@ -1,5 +1,6 @@
 import React from 'react';
 import { CardData } from '../types/card';
+import { AppConfig } from '../config/appConfig';
 
 /**
  * 可访问性增强的StudyCard组件辅助函数
@@ -61,7 +62,7 @@ export const useFocusManagement = () => {
     if (!container) return;
     
     const focusableElements = container.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      AppConfig.accessibility.focusableSelector
     );
     
     const firstElement = focusableElements[0] as HTMLElement;
