@@ -174,4 +174,67 @@ describe('StudyCard Component', () => {
     // Should maintain proper z-index for layering
     expect(overlay).toBeInTheDocument();
   });
+
+  it('cleans up timers when component unmounts', () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    
+    const audioCard = {
+      ...mockProps.card,
+      type: 'audio' as const,
+      choices: ['option1', 'option2', 'option3', 'option4'],
+      correct_answer: 'option1'
+    };
+    
+    const { unmount } = render(<StudyCard {...mockProps} card={audioCard} />);
+    
+    // Simulate user selecting a choice (which sets a timer)
+    const choiceButton = screen.getByText('option1');
+    fireEvent.click(choiceButton);
+    
+    // Unmount the component
+    unmount();
+    
+    // Verify that clearTimeout was called
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    
+    jest.useRealTimers();
+    clearTimeoutSpy.mockRestore();
+  });
+
+  it('cleans up timers when card changes', () => {
+    jest.useFakeTimers();
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    
+    const audioCard1 = {
+      ...mockProps.card,
+      id: 'audio1',
+      type: 'audio' as const,
+      choices: ['option1', 'option2', 'option3', 'option4'],
+      correct_answer: 'option1'
+    };
+    
+    const audioCard2 = {
+      ...mockProps.card,
+      id: 'audio2',
+      type: 'audio' as const,
+      choices: ['option1', 'option2', 'option3', 'option4'],
+      correct_answer: 'option1'
+    };
+    
+    const { rerender } = render(<StudyCard {...mockProps} card={audioCard1} />);
+    
+    // Simulate user selecting a choice (which sets a timer)
+    const choiceButton = screen.getByText('option1');
+    fireEvent.click(choiceButton);
+    
+    // Change the card
+    rerender(<StudyCard {...mockProps} card={audioCard2} />);
+    
+    // Verify that clearTimeout was called when card changed
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    
+    jest.useRealTimers();
+    clearTimeoutSpy.mockRestore();
+  });
 });

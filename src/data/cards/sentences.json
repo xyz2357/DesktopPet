@@ -1,0 +1,67 @@
+[
+  {
+    "id": "s001",
+    "type": "sentence",
+    "jp": "おはようございます",
+    "kana": "おはようございます",
+    "romaji": "ohayou gozaimasu",
+    "cn": "早上好",
+    "jlpt": "N5",
+    "difficulty": 1,
+    "category": "greeting",
+    "tags": ["polite", "morning"],
+    "usage_context": "formal_greeting"
+  },
+  {
+    "id": "s002",
+    "type": "sentence",
+    "jp": "ありがとうございます",
+    "kana": "ありがとうございます",
+    "romaji": "arigatou gozaimasu",
+    "cn": "谢谢",
+    "jlpt": "N5",
+    "difficulty": 1,
+    "category": "gratitude",
+    "tags": ["polite", "appreciation"],
+    "usage_context": "formal_thanks"
+  },
+  {
+    "id": "s003",
+    "type": "sentence",
+    "jp": "すみません",
+    "kana": "すみません",
+    "romaji": "sumimasen",
+    "cn": "对不起/不好意思",
+    "jlpt": "N5",
+    "difficulty": 1,
+    "category": "apology",
+    "tags": ["polite", "excuse"],
+    "usage_context": "apology_excuse"
+  },
+  {
+    "id": "s004",
+    "type": "sentence",
+    "jp": "こんにちは",
+    "kana": "こんにちは",
+    "romaji": "konnichiwa",
+    "cn": "你好",
+    "jlpt": "N5",
+    "difficulty": 1,
+    "category": "greeting",
+    "tags": ["casual", "afternoon"],
+    "usage_context": "general_greeting"
+  },
+  {
+    "id": "s005",
+    "type": "sentence",
+    "jp": "お疲れ様でした",
+    "kana": "おつかれさまでした",
+    "romaji": "otsukaresama deshita",
+    "cn": "辛苦了",
+    "jlpt": "N4",
+    "difficulty": 2,
+    "category": "workplace",
+    "tags": ["polite", "work"],
+    "usage_context": "workplace_farewell"
+  }
+]

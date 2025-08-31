@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CardData } from '../types/card';
 import './StudyCard.css';
 
@@ -32,6 +32,10 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
     isCorrect: false
   });
 
+  // 定时器引用，用于清理
+  const audioTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const arrangeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   // 获取卡片类型的中文名称
   const getCardTypeName = (type: string) => {
     switch (type) {
@@ -59,6 +63,39 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
     }
   }, [card]);
 
+  // 清理定时器的effect
+  useEffect(() => {
+    return () => {
+      // 组件卸载时清理所有定时器
+      if (audioTimerRef.current) {
+        clearTimeout(audioTimerRef.current);
+        audioTimerRef.current = null;
+      }
+      if (arrangeTimerRef.current) {
+        clearTimeout(arrangeTimerRef.current);
+        arrangeTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  // 卡片变化时也清理定时器
+  useEffect(() => {
+    // 清理上一张卡片的定时器
+    if (audioTimerRef.current) {
+      clearTimeout(audioTimerRef.current);
+      audioTimerRef.current = null;
+    }
+    if (arrangeTimerRef.current) {
+      clearTimeout(arrangeTimerRef.current);
+      arrangeTimerRef.current = null;
+    }
+    
+    // 重置状态
+    setSelectedChoice(null);
+    setShowResult(false);
+    setArrangeResult({ show: false, isCorrect: false });
+  }, [card.id]); // 使用card.id作为依赖，确保每次卡片切换都清理
+
   // ESC键关闭功能
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -74,6 +111,16 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
   }, [onClose]);
 
   const handleAnswer = (result: 'know' | 'unknown' | 'later') => {
+    // 用户手动操作时清理所有定时器
+    if (audioTimerRef.current) {
+      clearTimeout(audioTimerRef.current);
+      audioTimerRef.current = null;
+    }
+    if (arrangeTimerRef.current) {
+      clearTimeout(arrangeTimerRef.current);
+      arrangeTimerRef.current = null;
+    }
+    
     onAnswer(result);
   };
 
@@ -87,10 +134,16 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
     setSelectedChoice(choice);
     setShowResult(true);
     
+    // 清理之前的定时器
+    if (audioTimerRef.current) {
+      clearTimeout(audioTimerRef.current);
+    }
+    
     // 1.5秒后自动提交答案
-    setTimeout(() => {
+    audioTimerRef.current = setTimeout(() => {
       const isCorrect = choice === card.correct_answer;
       onAnswer(isCorrect ? 'know' : 'unknown');
+      audioTimerRef.current = null; // 清理引用
     }, 1500);
   };
 
@@ -145,8 +198,15 @@ const StudyCard: React.FC<StudyCardProps> = ({ card, onAnswer, onPlayTTS, onClos
     
     setArrangeResult({ show: true, isCorrect });
     
-    setTimeout(() => {
+    // 清理之前的定时器
+    if (arrangeTimerRef.current) {
+      clearTimeout(arrangeTimerRef.current);
+    }
+    
+    // 2秒后自动提交答案
+    arrangeTimerRef.current = setTimeout(() => {
       onAnswer(isCorrect ? 'know' : 'unknown');
+      arrangeTimerRef.current = null; // 清理引用
     }, 2000);
   };
 

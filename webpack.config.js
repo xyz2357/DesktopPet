@@ -75,11 +75,15 @@ const rendererConfig = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.json$/,
+        type: 'json'
       }
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx']
+    extensions: ['.tsx', '.ts', '.js', '.jsx', '.json']
   },
   plugins: [
     new HtmlWebpackPlugin({

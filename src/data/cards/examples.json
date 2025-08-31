@@ -1,0 +1,72 @@
+[
+  {
+    "id": "e001",
+    "type": "example",
+    "jp": "部屋が明るいです。",
+    "kana": "へやがあかるいです。",
+    "romaji": "heya ga akarui desu.",
+    "cn": "房间很明亮。",
+    "jlpt": "N5",
+    "difficulty": 1,
+    "category": "description",
+    "tags": ["adjective", "room"],
+    "grammar_focus": "い-adjective + です",
+    "vocabulary_focus": ["部屋", "明るい"]
+  },
+  {
+    "id": "e002",
+    "type": "example",
+    "jp": "今日はいい天気ですね。",
+    "kana": "きょうはいいてんきですね。",
+    "romaji": "kyou wa ii tenki desu ne.",
+    "cn": "今天天气真好呢。",
+    "jlpt": "N5",
+    "difficulty": 1,
+    "category": "weather",
+    "tags": ["daily-life", "weather"],
+    "grammar_focus": "は particle + ですね",
+    "vocabulary_focus": ["今日", "天気"]
+  },
+  {
+    "id": "e003",
+    "type": "example",
+    "jp": "母は料理を作っています。",
+    "kana": "はははりょうりをつくっています。",
+    "romaji": "haha wa ryouri wo tsukutte imasu.",
+    "cn": "妈妈在做料理。",
+    "jlpt": "N5",
+    "difficulty": 2,
+    "category": "family",
+    "tags": ["family", "cooking"],
+    "grammar_focus": "〜ています (continuous action)",
+    "vocabulary_focus": ["母", "料理", "作る"]
+  },
+  {
+    "id": "e004",
+    "type": "example",
+    "jp": "駅まで歩いて行きます。",
+    "kana": "えきまであるいていきます。",
+    "romaji": "eki made aruite ikimasu.",
+    "cn": "走路到车站。",
+    "jlpt": "N5",
+    "difficulty": 2,
+    "category": "transport",
+    "tags": ["walking", "station"],
+    "grammar_focus": "まで particle + て-form",
+    "vocabulary_focus": ["駅", "歩く", "行く"]
+  },
+  {
+    "id": "e005",
+    "type": "example",
+    "jp": "本を読むのが好きです。",
+    "kana": "ほんをよむのがすきです。",
+    "romaji": "hon wo yomu no ga suki desu.",
+    "cn": "喜欢读书。",
+    "jlpt": "N5",
+    "difficulty": 2,
+    "category": "hobby",
+    "tags": ["reading", "preference"],
+    "grammar_focus": "の nominalization + が好きです",
+    "vocabulary_focus": ["本", "読む", "好き"]
+  }
+]
