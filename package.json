@@ -1,0 +1,53 @@
+{
+  "name": "japanese-pet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "build:prod": "NODE_ENV=production webpack",
+    "dev": "webpack && electron dist/main.js",
+    "start": "npm run build && electron dist/main.js",
+    "package": "npm run build:prod && electron-builder",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "npm run test && npm run test:coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "copy-webpack-plugin": "^13.0.1",
+    "css-loader": "^7.1.2",
+    "electron": "^37.4.0",
+    "electron-builder": "^26.0.12",
+    "electron-chromedriver": "^37.4.0",
+    "html-webpack-plugin": "^5.6.4",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^30.1.1",
+    "jest-environment-jsdom": "^30.1.1",
+    "playwright": "^1.55.0",
+    "spectron": "^19.0.0",
+    "style-loader": "^4.0.0",
+    "ts-jest": "^29.4.1",
+    "ts-loader": "^9.5.4",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "typescript": "^5.9.2"
+  }
+}

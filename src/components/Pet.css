@@ -1,0 +1,96 @@
+.pet {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.pet:hover:not(.pet--dragging) {
+  transform: scale(1.1);
+}
+
+.pet--dragging {
+  cursor: grabbing;
+  transition: none;
+  z-index: 9999;
+}
+
+.pet__emoji {
+  font-size: 64px;
+  text-align: center;
+  line-height: 120px;
+  user-select: none;
+  transition: transform 0.3s ease;
+}
+
+.pet--loading .pet__emoji {
+  animation: bounce 1s infinite;
+}
+
+.pet--active .pet__emoji {
+  animation: pulse 2s infinite;
+}
+
+.pet--hover .pet__emoji {
+  transform: rotate(15deg);
+}
+
+.pet__bubble {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pet__bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+
+.pet--loading .pet__bubble,
+.pet--active .pet__bubble,
+.pet--hover .pet__bubble {
+  opacity: 1;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
