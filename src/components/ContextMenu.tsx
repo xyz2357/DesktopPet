@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { PetTexts } from '../config/petTexts';
 import './ContextMenu.css';
 
 interface ContextMenuProps {
@@ -46,7 +47,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ visible, x, y, onClose, onQui
     >
       <div className="context-menu__item" onClick={onQuit}>
         <span className="context-menu__icon">🚪</span>
-        <span className="context-menu__text">退出桌宠</span>
+        <span className="context-menu__text">{PetTexts.contextMenu.quit}</span>
       </div>
     </div>
   );

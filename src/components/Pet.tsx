@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ContextMenu from './ContextMenu';
 import { PetConfig } from '../config/appConfig';
+import { PetTexts } from '../config/petTexts';
 import { mediaManager, PetState, MediaFile } from '../utils/mediaManager';
 import './Pet.css';
 
@@ -102,7 +103,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
   };
 
   const handleMediaError = (state: string) => {
-    console.warn(`媒体文件加载失败，状态: ${state}`);
+    console.warn(`${PetTexts.errors.mediaLoadFailed}: ${state}`);
     setMediaLoadError(prev => ({ ...prev, [state]: true }));
   };
 
@@ -195,7 +196,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
       const alpha = pixel.data[3];
       return alpha > PetConfig.interaction.alphaThreshold;
     } catch (error) {
-      console.warn('无法读取像素数据:', error);
+      console.warn(`${PetTexts.errors.pixelReadFailed}:`, error);
       return true; // 出错时默认允许交互
     }
   };
@@ -223,7 +224,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
     try {
       await window.electronAPI.quitApp();
     } catch (error) {
-      console.error('Failed to quit app:', error);
+      console.error(`${PetTexts.errors.quitFailed}:`, error);
     }
     handleCloseContextMenu();
   };
@@ -317,7 +318,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
           setIsHovered(false);
           onHoverChange(false);
         }}
-        title="拖拽移动，点击学习，右键菜单"
+        title={PetTexts.interactions.tooltip}
       >
         <div className="pet__avatar">
           {shouldUseEmoji(getPetState()) ? (
@@ -386,10 +387,10 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
           )}
         </div>
         <div className="pet__bubble">
-          {isLoading && <span>思考中...</span>}
-          {isActive && <span>来学习吧！</span>}
-          {isDragging && <span>拖拽中...</span>}
-          {isHovered && !isActive && !isLoading && !isDragging && <span>拖拽/点击/右键</span>}
+          {isLoading && <span>{PetTexts.bubbleTexts.thinking}</span>}
+          {isActive && <span>{PetTexts.bubbleTexts.ready}</span>}
+          {isDragging && <span>{PetTexts.bubbleTexts.dragging}</span>}
+          {isHovered && !isActive && !isLoading && !isDragging && <span>{PetTexts.bubbleTexts.hover}</span>}
         </div>
       </div>
       
