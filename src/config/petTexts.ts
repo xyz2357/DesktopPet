@@ -11,6 +11,15 @@ export const PetTexts = {
     dragging: '放开我！',
     hover: '咕...',
     congrats: '啊啊！....',
+    walking: '散步中...',
+    sleeping: 'zzz...',
+    observing: '在看什么呢？',
+    yawning: '好困...',
+    stretching: '伸展一下～',
+    followingMouse: '发现什么了！',
+    longIdle: '无聊...',
+    excited: '好兴奋！',
+    sleepy: '想睡觉...',
   },
 
   // 桌宠交互提示

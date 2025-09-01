@@ -19,14 +19,14 @@ describe('ContextMenu Component', () => {
   it('renders menu when visible', () => {
     render(<ContextMenu {...mockProps} />);
     
-    expect(screen.getByText('退出桌宠')).toBeInTheDocument();
+    expect(screen.getByText('放置Play')).toBeInTheDocument();
     expect(screen.getByText('🚪')).toBeInTheDocument();
   });
 
   it('does not render menu when not visible', () => {
     render(<ContextMenu {...mockProps} visible={false} />);
     
-    expect(screen.queryByText('退出桌宠')).not.toBeInTheDocument();
+    expect(screen.queryByText('放置Play')).not.toBeInTheDocument();
   });
 
   it('positions menu correctly', () => {
@@ -43,7 +43,7 @@ describe('ContextMenu Component', () => {
     const user = userEvent.setup();
     render(<ContextMenu {...mockProps} />);
     
-    const quitItem = screen.getByText('退出桌宠');
+    const quitItem = screen.getByText('放置Play');
     await user.click(quitItem);
     
     expect(mockProps.onQuit).toHaveBeenCalledTimes(1);
@@ -79,7 +79,7 @@ describe('ContextMenu Component', () => {
     const user = userEvent.setup();
     render(<ContextMenu {...mockProps} />);
     
-    const menuItem = screen.getByText('退出桌宠');
+    const menuItem = screen.getByText('放置Play');
     const menuContainer = menuItem.closest('.context-menu');
     
     if (menuContainer) {

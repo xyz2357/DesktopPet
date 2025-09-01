@@ -41,12 +41,61 @@ export const AppConfig = {
       emojiSizeRatio: 0.5
     },
 
+    /** 鼠标跟踪配置 */
+    mouseTracking: {
+      /** 是否启用鼠标跟踪 */
+      enabled: true,
+      /** 跟踪半径 (px) - 在此范围内才跟踪鼠标 */
+      trackingRadius: 200,
+      /** 眼球跟踪灵敏度 (0-1) */
+      sensitivity: 0.7,
+      /** 眼球移动平滑度 (ms) */
+      smoothness: 300
+    },
+
+    /** 行走行为配置 */
+    walking: {
+      /** 移动速度 (px/s) */
+      speed: 30,
+      /** 移动方向改变概率 (每秒) */
+      directionChangeProbability: 0.3,
+      /** 边界缓冲区 (px) */
+      boundaryMargin: 20,
+      /** 行走时的步幅变化 */
+      stepVariation: 5
+    },
+
     /** 状态配置 */
     states: {
       /** 祝贺状态配置 */
       congrats: {
         /** 持续时间 (ms) */
         duration: 1000
+      },
+      /** 自主行为状态配置 */
+      autonomous: {
+        /** 空闲状态切换间隔 (ms) */
+        idleStateChangeInterval: 30000, // 30秒
+        /** 行走状态持续时间 (ms) */
+        walkingDuration: 8000, // 8秒
+        /** 睡眠状态持续时间 (ms) */
+        sleepingDuration: 15000, // 15秒
+        /** 观察状态持续时间 (ms) */
+        observingDuration: 5000, // 5秒
+        /** 打哈欠状态持续时间 (ms) */
+        yawningDuration: 2000, // 2秒
+        /** 伸展状态持续时间 (ms) */
+        stretchingDuration: 3000, // 3秒
+        /** 长时间无操作进入睡眠的时间 (ms) */
+        longIdleThreshold: 120000, // 2分钟
+        /** 每种行为的触发概率 */
+        behaviorProbabilities: {
+          walking: 0.3,
+          yawning: 0.2,
+          stretching: 0.15,
+          observing: 0.25,
+          sleeping: 0.1
+        }
       }
     },
 

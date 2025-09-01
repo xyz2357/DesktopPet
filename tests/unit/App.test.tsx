@@ -30,7 +30,7 @@ describe('App Component', () => {
   it('renders the pet component', () => {
     render(<App />);
     
-    const petElement = screen.getByTitle('拖拽移动，点击学习，右键菜单');
+    const petElement = screen.getByTitle('随意玩弄她吧');
     expect(petElement).toBeInTheDocument();
   });
 
@@ -38,7 +38,7 @@ describe('App Component', () => {
     const user = userEvent.setup();
     render(<App />);
     
-    const petElement = screen.getByTitle('拖拽移动，点击学习，右键菜单');
+    const petElement = screen.getByTitle('随意玩弄她吧');
     
     // Initially should enable mouse passthrough (ignore events)
     await waitFor(() => {
@@ -66,7 +66,7 @@ describe('App Component', () => {
     const user = userEvent.setup();
     render(<App />);
     
-    const petElement = screen.getByTitle('拖拽移动，点击学习，右键菜单');
+    const petElement = screen.getByTitle('随意玩弄她吧');
     
     // Hover over pet should disable mouse passthrough
     await user.hover(petElement);
@@ -85,7 +85,7 @@ describe('App Component', () => {
     const user = userEvent.setup();
     render(<App />);
     
-    const petElement = screen.getByTitle('拖拽移动，点击学习，右键菜单');
+    const petElement = screen.getByTitle('随意玩弄她吧');
     
     // Click pet to open study card
     await user.click(petElement);
@@ -104,7 +104,7 @@ describe('App Component', () => {
     const user = userEvent.setup();
     render(<App />);
     
-    const petElement = screen.getByTitle('拖拽移动，点击学习，右键菜单');
+    const petElement = screen.getByTitle('随意玩弄她吧');
     
     // Open study card
     await user.click(petElement);
@@ -130,7 +130,7 @@ describe('App Component', () => {
     const user = userEvent.setup();
     render(<App />);
     
-    const petElement = screen.getByTitle('拖拽移动，点击学习，右键菜单');
+    const petElement = screen.getByTitle('随意玩弄她吧');
     
     // Open study card first
     await user.click(petElement);

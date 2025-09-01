@@ -5,7 +5,7 @@
 
 import { PetConfig, AppConfig } from '../config/appConfig';
 
-export type PetState = 'idle' | 'hover' | 'active' | 'loading' | 'congrats';
+export type PetState = 'idle' | 'hover' | 'active' | 'loading' | 'congrats' | 'walking' | 'sleeping' | 'observing' | 'yawning' | 'stretching';
 export type MediaType = 'image' | 'video';
 
 export interface MediaFile {
@@ -50,7 +50,7 @@ export class MediaManager {
    * 加载媒体文件列表
    */
   private async loadMediaFiles(): Promise<void> {
-    const states: PetState[] = ['idle', 'hover', 'active', 'loading', 'congrats'];
+    const states: PetState[] = ['idle', 'hover', 'active', 'loading', 'congrats', 'walking', 'sleeping', 'observing', 'yawning', 'stretching'];
     
     // 在浏览器环境中，我们需要通过webpack的require.context来加载媒体文件
     await Promise.all(states.map(async state => {
@@ -109,6 +109,19 @@ export class MediaManager {
           return (require as any).context('../assets/pet-media/loading', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
         case 'congrats':
           return (require as any).context('../assets/pet-media/congrats', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
+        // 新增的自主行为状态，如果文件夹不存在会回退到默认文件
+        case 'walking':
+        case 'sleeping':
+        case 'observing':
+        case 'yawning':
+        case 'stretching':
+          // 尝试加载对应文件夹，如果不存在则回退到idle状态的媒体
+          try {
+            return (require as any).context(`../assets/pet-media/${state}`, false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
+          } catch {
+            console.warn(`${state}状态的媒体文件夹不存在，使用idle状态的媒体文件`);
+            return (require as any).context('../assets/pet-media/idle', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
+          }
         default:
           return null;
       }

@@ -3,6 +3,9 @@ import ContextMenu from './ContextMenu';
 import { PetConfig } from '../config/appConfig';
 import { PetTexts } from '../config/petTexts';
 import { mediaManager, PetState, MediaFile } from '../utils/mediaManager';
+import { AutonomousBehaviorManager, BehaviorEvent } from '../utils/autonomousBehavior';
+import { mouseTracker, MouseTrackingData } from '../utils/mouseTracker';
+import { interactionManager, InteractionEvent, TimeBasedEmotion } from '../utils/interactionManager';
 import './Pet.css';
 
 // Import placeholder images
@@ -44,13 +47,36 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   // Canvas引用用于像素检测
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mediaRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
+
+  // 自主行为状态
+  const [autonomousState, setAutonomousState] = useState<PetState>('idle');
+  const [isFollowingMouse, setIsFollowingMouse] = useState(false);
+  const [eyeDirection, setEyeDirection] = useState<{x: number, y: number}>({ x: 0, y: 0 });
+  const behaviorManagerRef = useRef<AutonomousBehaviorManager | null>(null);
+  const walkingAnimationRef = useRef<number | null>(null);
+  const lastUserInteractionRef = useRef<number>(Date.now());
+
+  // 交互管理状态
+  const [specialMessage, setSpecialMessage] = useState<string>('');
+  const [timeBasedEmotion, setTimeBasedEmotion] = useState<TimeBasedEmotion | null>(null);
+  const specialMessageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const emotionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  const getPetState = () => {
+  const getPetState = (): PetState => {
+    // 优先级：用户交互状态 > 自主行为状态
     if (isCongrats) return 'congrats';
     if (isLoading) return 'loading';
     if (isActive) return 'active';
-    if (isHovered) return 'hover';
-    return 'idle';
+    if (isDragging) return 'idle'; // 拖拽时保持idle状态
+    if (isHovered && !isAutonomousState(autonomousState)) return 'hover';
+    
+    // 如果没有用户交互，使用自主行为状态
+    return autonomousState;
+  };
+
+  // 判断是否为自主行为状态
+  const isAutonomousState = (state: PetState): boolean => {
+    return ['walking', 'sleeping', 'observing', 'yawning', 'stretching'].includes(state);
   };
 
   // 媒体管理器初始化和初始媒体文件加载
@@ -58,8 +84,8 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
     const initializeMedia = async () => {
       await mediaManager.initialize();
       
-      // 为所有状态预先获取媒体文件
-      const states: PetState[] = ['idle', 'hover', 'active', 'loading', 'congrats'];
+      // 为所有状态预先获取媒体文件，包括新的自主行为状态
+      const states: PetState[] = ['idle', 'hover', 'active', 'loading', 'congrats', 'walking', 'sleeping', 'observing', 'yawning', 'stretching'];
       const initialMedia: {[key: string]: MediaFile | null} = {};
       
       states.forEach(state => {
@@ -73,6 +99,117 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
     initializeMedia().catch(console.error);
   }, []);
 
+  // 自主行为管理器初始化
+  useEffect(() => {
+    const behaviorManager = new AutonomousBehaviorManager();
+    behaviorManagerRef.current = behaviorManager;
+
+    // 监听行为事件
+    const handleBehaviorEvent = (event: BehaviorEvent) => {
+      console.log('🎭 收到行为事件:', event);
+      
+      if (event.type === 'stateChange' && event.state) {
+        setAutonomousState(event.state);
+        
+        // 如果开始新的媒体状态，获取对应的媒体文件
+        if (PetConfig.media.randomSelection.changeOnStateSwitch) {
+          const mediaFile = mediaManager.getRandomMediaForState(event.state);
+          if (mediaFile) {
+            setCurrentMedia(prev => ({ ...prev, [event.state as string]: mediaFile }));
+          }
+        }
+      }
+      
+      if (event.type === 'positionUpdate' && event.position) {
+        setPosition(event.position);
+      }
+    };
+
+    behaviorManager.addEventListener(handleBehaviorEvent);
+
+    // 开始行走动画循环
+    const walkingLoop = () => {
+      if (behaviorManager.getIsWalking()) {
+        const newPosition = behaviorManager.updateWalkingPosition({
+          position,
+          windowSize: { width: window.innerWidth, height: window.innerHeight },
+          petSize: mediaDimensions,
+          lastInteractionTime: lastUserInteractionRef.current,
+          hasUserInteraction: isHovered || isActive || isDragging,
+          mousePosition: mouseTracker.getCurrentMousePosition()
+        });
+
+        if (newPosition) {
+          setPosition(newPosition);
+        }
+      }
+
+      walkingAnimationRef.current = requestAnimationFrame(walkingLoop);
+    };
+
+    walkingAnimationRef.current = requestAnimationFrame(walkingLoop);
+
+    return () => {
+      behaviorManager.removeEventListener(handleBehaviorEvent);
+      behaviorManager.destroy();
+      if (walkingAnimationRef.current) {
+        cancelAnimationFrame(walkingAnimationRef.current);
+      }
+    };
+  }, []);
+
+  // 鼠标跟踪初始化
+  useEffect(() => {
+    const handleMouseTracking = (data: MouseTrackingData) => {
+      setIsFollowingMouse(data.isInTrackingRange);
+      setEyeDirection(data.lookDirection);
+    };
+
+    mouseTracker.addListener(handleMouseTracking);
+    mouseTracker.startTracking(position, mediaDimensions);
+
+    return () => {
+      mouseTracker.removeListener(handleMouseTracking);
+      mouseTracker.stopTracking();
+    };
+  }, []);
+
+  // 更新鼠标跟踪的桌宠位置和尺寸
+  useEffect(() => {
+    mouseTracker.updatePetData(position, mediaDimensions);
+  }, [position, mediaDimensions]);
+
+  // 交互管理器初始化
+  useEffect(() => {
+    // 监听时间感知情绪
+    const handleTimeBasedEmotion = (emotion: TimeBasedEmotion) => {
+      console.log('😊 收到时间感知情绪:', emotion);
+      setTimeBasedEmotion(emotion);
+      
+      // 清除之前的超时
+      if (emotionTimeoutRef.current) {
+        clearTimeout(emotionTimeoutRef.current);
+      }
+      
+      // 设置情绪显示时间
+      emotionTimeoutRef.current = setTimeout(() => {
+        setTimeBasedEmotion(null);
+      }, emotion.duration);
+    };
+
+    interactionManager.addEmotionListener(handleTimeBasedEmotion);
+
+    return () => {
+      interactionManager.removeEmotionListener(handleTimeBasedEmotion);
+      if (specialMessageTimeoutRef.current) {
+        clearTimeout(specialMessageTimeoutRef.current);
+      }
+      if (emotionTimeoutRef.current) {
+        clearTimeout(emotionTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // 当状态改变时更新媒体文件（如果需要的话）
   useEffect(() => {
     const state = getPetState() as PetState;
@@ -84,7 +221,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         setCurrentMedia(prev => ({ ...prev, [state]: mediaFile }));
       }
     }
-  }, [isLoading, isActive, isHovered, isCongrats]);
+  }, [isLoading, isActive, isHovered, isCongrats, autonomousState]); // 添加 autonomousState 到依赖数组
 
   const getCurrentMedia = () => {
     const state = getPetState() as PetState;
@@ -92,7 +229,14 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   };
 
   const getPetEmoji = () => {
-    switch (getPetState()) {
+    const state = getPetState();
+    
+    // 拖动时始终显示特定emoji，不管其他状态
+    if (isDragging) {
+      return '😵';
+    }
+    
+    switch (state) {
       case 'congrats':
         return '🎉';
       case 'loading':
@@ -101,9 +245,59 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         return '😊';
       case 'hover':
         return '😸';
-      default:
+      case 'walking':
+        return '🚶';
+      case 'sleeping':
         return '😴';
+      case 'observing':
+        return '👀';
+      case 'yawning':
+        return '🥱';
+      case 'stretching':
+        return '🤸';
+      default:
+        return isFollowingMouse ? '🧐' : '😊';
     }
+  };
+
+  // 处理用户交互，通知行为管理器
+  const handleUserInteraction = () => {
+    lastUserInteractionRef.current = Date.now();
+    if (behaviorManagerRef.current) {
+      behaviorManagerRef.current.onUserInteraction();
+    }
+  };
+
+  // 处理点击交互和彩蛋
+  const handlePetClick = () => {
+    handleUserInteraction();
+    
+    // 处理交互管理器的点击事件
+    const interactionEvent = interactionManager.handleClick();
+    console.log('🎯 点击事件:', interactionEvent);
+    
+    // 处理彩蛋事件
+    if (interactionEvent.data?.easterEgg) {
+      setSpecialMessage(interactionEvent.data.message);
+      
+      // 清除之前的超时
+      if (specialMessageTimeoutRef.current) {
+        clearTimeout(specialMessageTimeoutRef.current);
+      }
+      
+      // 3秒后清除特殊消息
+      specialMessageTimeoutRef.current = setTimeout(() => {
+        setSpecialMessage('');
+      }, 3000);
+      
+      // 触发特殊动画或效果
+      if (interactionEvent.type === 'rapidClick') {
+        console.log('🔥 触发快速点击彩蛋！');
+      }
+    }
+    
+    // 调用原有的点击处理
+    onClick();
   };
 
   const handleMediaError = (state: string) => {
@@ -241,6 +435,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
       }
       
       e.preventDefault();
+      handleUserInteraction(); // 通知用户交互
       hasDraggedRef.current = false;
       dragStartRef.current = {
         x: position.x,
@@ -293,7 +488,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         
         // 如果没有拖拽，则触发点击事件
         if (!wasDragging) {
-          onClick();
+          handlePetClick();
         }
       };
       
@@ -325,6 +520,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         onMouseEnter={() => {
           setIsHovered(true);
           onHoverChange(true);
+          handleUserInteraction(); // 通知用户交互
         }}
         onMouseLeave={() => {
           setIsHovered(false);
@@ -399,11 +595,20 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
           )}
         </div>
         <div className="pet__bubble">
-          {isCongrats && <span>{PetTexts.bubbleTexts.congrats}</span>}
-          {isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.thinking}</span>}
-          {isActive && !isCongrats && <span>{PetTexts.bubbleTexts.ready}</span>}
-          {isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.dragging}</span>}
-          {isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.hover}</span>}
+          {/* 优先级：特殊消息 > 时间感知情绪 > 常规状态 */}
+          {specialMessage && <span style={{color: '#ff6b35', fontWeight: 'bold'}}>{specialMessage}</span>}
+          {!specialMessage && timeBasedEmotion && <span style={{color: '#4a90e2', fontStyle: 'italic'}}>{timeBasedEmotion.text}</span>}
+          {!specialMessage && !timeBasedEmotion && isCongrats && <span>{PetTexts.bubbleTexts.congrats}</span>}
+          {!specialMessage && !timeBasedEmotion && isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.thinking}</span>}
+          {!specialMessage && !timeBasedEmotion && isActive && !isCongrats && <span>{PetTexts.bubbleTexts.ready}</span>}
+          {!specialMessage && !timeBasedEmotion && isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.dragging}</span>}
+          {!specialMessage && !timeBasedEmotion && isFollowingMouse && !isDragging && !isActive && !isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.followingMouse}</span>}
+          {!specialMessage && !timeBasedEmotion && autonomousState === 'walking' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.walking}</span>}
+          {!specialMessage && !timeBasedEmotion && autonomousState === 'sleeping' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.sleeping}</span>}
+          {!specialMessage && !timeBasedEmotion && autonomousState === 'observing' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.observing}</span>}
+          {!specialMessage && !timeBasedEmotion && autonomousState === 'yawning' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.yawning}</span>}
+          {!specialMessage && !timeBasedEmotion && autonomousState === 'stretching' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.stretching}</span>}
+          {!specialMessage && !timeBasedEmotion && isHovered && !isActive && !isLoading && !isDragging && !isCongrats && !isAutonomousState(autonomousState) && <span>{PetTexts.bubbleTexts.hover}</span>}
         </div>
       </div>
       
