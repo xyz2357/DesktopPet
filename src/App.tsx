@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Pet from './components/Pet';
 import StudyCard from './components/StudyCard';
 import { CardData } from './types/card';
-import { LearningConfig } from './config/appConfig';
+import { LearningConfig, PetConfig } from './config/appConfig';
 import './App.css';
 
 const App: React.FC = () => {
@@ -11,6 +11,8 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPetHovered, setIsPetHovered] = useState(false);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
+  const [isCongrats, setIsCongrats] = useState(false);
+  const congratsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // 获取新的学习卡片
   const fetchNewCard = async () => {
@@ -28,12 +30,34 @@ const App: React.FC = () => {
     }
   };
 
+  // 触发祝贺状态
+  const triggerCongrats = () => {
+    // 清除之前的超时
+    if (congratsTimeoutRef.current) {
+      clearTimeout(congratsTimeoutRef.current);
+    }
+    
+    setIsCongrats(true);
+    
+    // 设置超时自动退出祝贺状态
+    congratsTimeoutRef.current = setTimeout(() => {
+      setIsCongrats(false);
+      congratsTimeoutRef.current = null;
+    }, PetConfig.states.congrats.duration);
+  };
+
   // 处理学习卡片答案
   const handleAnswer = async (result: 'know' | 'unknown' | 'later') => {
     if (!currentCard) return;
 
     try {
       await window.electronAPI.submitAnswer(currentCard.id, result);
+      
+      // 如果回答正确，触发祝贺状态
+      if (result === 'know') {
+        triggerCongrats();
+      }
+      
       setShowCard(false);
       setCurrentCard(null);
       // 关闭学习卡片时恢复点击穿透
@@ -77,6 +101,15 @@ const App: React.FC = () => {
     setMouseEvents();
   }, [showCard, isPetHovered, isContextMenuVisible]);
 
+  // 清理祝贺超时
+  useEffect(() => {
+    return () => {
+      if (congratsTimeoutRef.current) {
+        clearTimeout(congratsTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // 定时推送（简化版，每60秒推送一次）
   useEffect(() => {
     const interval = setInterval(() => {
@@ -94,6 +127,7 @@ const App: React.FC = () => {
         onClick={fetchNewCard}
         isActive={showCard}
         isLoading={isLoading}
+        isCongrats={isCongrats}
         onHoverChange={setIsPetHovered}
         onContextMenuChange={setIsContextMenuVisible}
       />

@@ -40,6 +40,35 @@ export const AppConfig = {
       /** 表情符号相对大小比例 */
       emojiSizeRatio: 0.5
     },
+
+    /** 状态配置 */
+    states: {
+      /** 祝贺状态配置 */
+      congrats: {
+        /** 持续时间 (ms) */
+        duration: 1000
+      }
+    },
+
+    /** 气泡配置 */
+    bubble: {
+      /** 文字大小 (px) */
+      fontSize: 24,
+      /** 内边距 (px) - [上下, 左右] */
+      padding: [6, 12],
+      /** 圆角半径 (px) */
+      borderRadius: 16,
+      /** 距离桌宠顶部的距离 (px) */
+      topOffset: 40,
+      /** 背景透明度 */
+      backgroundOpacity: 0.9,
+      /** 边框透明度 */
+      borderOpacity: 0.1,
+      /** 阴影模糊度 (px) */
+      shadowBlur: 12,
+      /** 阴影透明度 */
+      shadowOpacity: 0.15
+    },
     
     /** 动画配置 */
     animation: {
@@ -89,7 +118,8 @@ export const AppConfig = {
           idle: 'idle/',
           hover: 'hover/',
           active: 'active/',
-          loading: 'loading/'
+          loading: 'loading/',
+          congrats: 'congrats/'
         }
       }
     }
@@ -226,8 +256,8 @@ export const AppConfig = {
       enabled: true,
       /** 预加载的最大文件数量 */
       maxFiles: 20,
-      /** 预加载优先级：'idle' > 'hover' > 'active' > 'loading' */
-      priority: ['idle', 'hover', 'active', 'loading']
+      /** 预加载优先级：'idle' > 'hover' > 'active' > 'loading' > 'congrats' */
+      priority: ['idle', 'hover', 'active', 'loading', 'congrats']
     },
     /** 缓存配置 */
     caching: {

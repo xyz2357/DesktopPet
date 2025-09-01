@@ -15,11 +15,12 @@ interface PetProps {
   onClick: () => void;
   isActive: boolean;
   isLoading: boolean;
+  isCongrats: boolean;
   onHoverChange: (isHovered: boolean) => void;
   onContextMenuChange: (isVisible: boolean) => void;
 }
 
-const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, onContextMenuChange }) => {
+const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onHoverChange, onContextMenuChange }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [contextMenu, setContextMenu] = useState<{visible: boolean; x: number; y: number}>({
     visible: false,
@@ -45,6 +46,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
   const mediaRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
   
   const getPetState = () => {
+    if (isCongrats) return 'congrats';
     if (isLoading) return 'loading';
     if (isActive) return 'active';
     if (isHovered) return 'hover';
@@ -57,7 +59,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
       await mediaManager.initialize();
       
       // 为所有状态预先获取媒体文件
-      const states: PetState[] = ['idle', 'hover', 'active', 'loading'];
+      const states: PetState[] = ['idle', 'hover', 'active', 'loading', 'congrats'];
       const initialMedia: {[key: string]: MediaFile | null} = {};
       
       states.forEach(state => {
@@ -82,7 +84,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
         setCurrentMedia(prev => ({ ...prev, [state]: mediaFile }));
       }
     }
-  }, [isLoading, isActive, isHovered]);
+  }, [isLoading, isActive, isHovered, isCongrats]);
 
   const getCurrentMedia = () => {
     const state = getPetState() as PetState;
@@ -91,6 +93,8 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
 
   const getPetEmoji = () => {
     switch (getPetState()) {
+      case 'congrats':
+        return '🎉';
       case 'loading':
         return '🤔';
       case 'active':
@@ -306,8 +310,16 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
           left: position.x,
           top: position.y,
           width: mediaDimensions.width,
-          height: mediaDimensions.height
-        }}
+          height: mediaDimensions.height,
+          // 气泡样式 CSS 变量
+          '--bubble-font-size': `${PetConfig.bubble.fontSize}px`,
+          '--bubble-padding': `${PetConfig.bubble.padding[0]}px ${PetConfig.bubble.padding[1]}px`,
+          '--bubble-border-radius': `${PetConfig.bubble.borderRadius}px`,
+          '--bubble-top-offset': `-${PetConfig.bubble.topOffset}px`,
+          '--bubble-background': `rgba(255, 255, 255, ${PetConfig.bubble.backgroundOpacity})`,
+          '--bubble-border': `1px solid rgba(0, 0, 0, ${PetConfig.bubble.borderOpacity})`,
+          '--bubble-shadow': `0 4px ${PetConfig.bubble.shadowBlur}px rgba(0, 0, 0, ${PetConfig.bubble.shadowOpacity})`
+        } as React.CSSProperties}
         onMouseDown={handleMouseDown}
         onContextMenu={handleContextMenu}
         onMouseEnter={() => {
@@ -387,10 +399,11 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, onHoverChange, 
           )}
         </div>
         <div className="pet__bubble">
-          {isLoading && <span>{PetTexts.bubbleTexts.thinking}</span>}
-          {isActive && <span>{PetTexts.bubbleTexts.ready}</span>}
-          {isDragging && <span>{PetTexts.bubbleTexts.dragging}</span>}
-          {isHovered && !isActive && !isLoading && !isDragging && <span>{PetTexts.bubbleTexts.hover}</span>}
+          {isCongrats && <span>{PetTexts.bubbleTexts.congrats}</span>}
+          {isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.thinking}</span>}
+          {isActive && !isCongrats && <span>{PetTexts.bubbleTexts.ready}</span>}
+          {isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.dragging}</span>}
+          {isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.hover}</span>}
         </div>
       </div>
       

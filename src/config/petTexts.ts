@@ -9,7 +9,8 @@ export const PetTexts = {
     thinking: '嗯...',
     ready: '又想干什么！',
     dragging: '放开我！',
-    hover: '咕...'
+    hover: '咕...',
+    congrats: '啊啊！....',
   },
 
   // 桌宠交互提示

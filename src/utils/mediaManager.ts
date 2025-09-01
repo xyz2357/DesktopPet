@@ -5,7 +5,7 @@
 
 import { PetConfig, AppConfig } from '../config/appConfig';
 
-export type PetState = 'idle' | 'hover' | 'active' | 'loading';
+export type PetState = 'idle' | 'hover' | 'active' | 'loading' | 'congrats';
 export type MediaType = 'image' | 'video';
 
 export interface MediaFile {
@@ -50,7 +50,7 @@ export class MediaManager {
    * 加载媒体文件列表
    */
   private async loadMediaFiles(): Promise<void> {
-    const states: PetState[] = ['idle', 'hover', 'active', 'loading'];
+    const states: PetState[] = ['idle', 'hover', 'active', 'loading', 'congrats'];
     
     // 在浏览器环境中，我们需要通过webpack的require.context来加载媒体文件
     await Promise.all(states.map(async state => {
@@ -107,6 +107,8 @@ export class MediaManager {
           return (require as any).context('../assets/pet-media/active', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
         case 'loading':
           return (require as any).context('../assets/pet-media/loading', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
+        case 'congrats':
+          return (require as any).context('../assets/pet-media/congrats', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
         default:
           return null;
       }
