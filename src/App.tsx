@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Pet from './components/Pet';
 import StudyCard from './components/StudyCard';
+import ItemPanel from './components/ItemPanel';
 import { CardData } from './types/card';
+import { ItemData } from './types/item';
 import { LearningConfig, PetConfig } from './config/appConfig';
+import { dragDropManager } from './utils/dragDropManager';
 import './App.css';
 
 const App: React.FC = () => {
@@ -13,6 +16,9 @@ const App: React.FC = () => {
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const [isCongrats, setIsCongrats] = useState(false);
   const congratsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // 道具面板状态
+  const [showItemPanel, setShowItemPanel] = useState(false);
 
   // 获取新的学习卡片
   const fetchNewCard = async () => {
@@ -84,12 +90,18 @@ const App: React.FC = () => {
     await window.electronAPI.setIgnoreMouseEvents(true);
   };
 
+  // 道具拖拽处理
+  const handleItemDragStart = (item: ItemData, event: React.DragEvent) => {
+    console.log('🎁 开始拖拽道具:', item.name);
+    dragDropManager.startDrag(item, event.nativeEvent);
+  };
+
   // 管理点击穿透状态
   useEffect(() => {
     const setMouseEvents = async () => {
-      if (showCard || isPetHovered || isContextMenuVisible) {
-        // 显示学习卡片、鼠标悬停桌宠或显示右键菜单时禁用点击穿透
-        console.log('Disabling mouse events for study card, pet hover, or context menu');
+      if (showCard || isPetHovered || isContextMenuVisible || showItemPanel) {
+        // 显示学习卡片、鼠标悬停桌宠、显示右键菜单或显示道具面板时禁用点击穿透
+        console.log('Disabling mouse events for UI elements');
         await window.electronAPI.setIgnoreMouseEvents(false);
       } else {
         // 其他情况启用点击穿透
@@ -99,7 +111,29 @@ const App: React.FC = () => {
     };
     
     setMouseEvents();
-  }, [showCard, isPetHovered, isContextMenuVisible]);
+  }, [showCard, isPetHovered, isContextMenuVisible, showItemPanel]);
+
+  // 键盘快捷键处理
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // 按 I 键打开/关闭道具面板
+      if (event.key === 'i' || event.key === 'I') {
+        event.preventDefault();
+        setShowItemPanel(prev => !prev);
+      }
+      // 按 Escape 键关闭道具面板
+      if (event.key === 'Escape' && showItemPanel) {
+        event.preventDefault();
+        setShowItemPanel(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showItemPanel]);
 
   // 清理祝贺超时
   useEffect(() => {
@@ -138,6 +172,31 @@ const App: React.FC = () => {
           onPlayTTS={handlePlayTTS}
           onClose={handleCloseCard}
         />
+      )}
+      <ItemPanel
+        visible={showItemPanel}
+        onClose={() => setShowItemPanel(false)}
+        onItemDragStart={handleItemDragStart}
+      />
+      
+      {/* 道具面板提示 */}
+      {!showItemPanel && !showCard && (
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            background: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '8px 12px',
+            borderRadius: '20px',
+            fontSize: '12px',
+            pointerEvents: 'none',
+            zIndex: 100
+          }}
+        >
+          按 I 键打开道具箱
+        </div>
       )}
     </div>
   );

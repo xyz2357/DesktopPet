@@ -4,6 +4,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   user-select: none;
+  z-index: 1001; /* 确保在拖拽时能接收到事件 */
 }
 
 /* .pet:hover:not(.pet--dragging) {
@@ -316,4 +317,269 @@
   50% {
     transform: scale(1.01);
   }
+}
+
+/* 道具系统相关样式 */
+
+/* 拖拽悬停效果 */
+.pet--dragover {
+  box-shadow: 0 0 20px rgba(74, 144, 226, 0.8);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+}
+
+.pet--dragover .pet__emoji,
+.pet--dragover .pet__image,
+.pet--dragover .pet__video {
+  animation: dragover-pulse 1s infinite ease-in-out;
+}
+
+@keyframes dragover-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+/* 道具状态动画 */
+
+/* 吃东西动画 */
+.pet--eating .pet__emoji,
+.pet--eating .pet__image,
+.pet--eating .pet__video {
+  animation: eating 2s ease-in-out;
+}
+
+@keyframes eating {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1) translateY(-2px);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  75% {
+    transform: scale(1.08) translateY(-1px);
+  }
+}
+
+/* 喝东西动画 */
+.pet--drinking .pet__emoji,
+.pet--drinking .pet__image,
+.pet--drinking .pet__video {
+  animation: drinking 1.5s ease-in-out;
+}
+
+@keyframes drinking {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05) translateY(-3px);
+  }
+}
+
+/* 玩耍动画 */
+.pet--playing .pet__emoji,
+.pet--playing .pet__image,
+.pet--playing .pet__video {
+  animation: playing 2s infinite ease-in-out;
+}
+
+@keyframes playing {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-10deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(15deg) scale(1.15);
+  }
+  75% {
+    transform: rotate(-5deg) scale(1.05);
+  }
+}
+
+/* 顽皮状态 */
+.pet--playful .pet__emoji,
+.pet--playful .pet__image,
+.pet--playful .pet__video {
+  animation: playful 1s infinite ease-in-out;
+}
+
+@keyframes playful {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(5px) scale(1.02);
+  }
+}
+
+/* 狩猎状态 */
+.pet--hunting .pet__emoji,
+.pet--hunting .pet__image,
+.pet--hunting .pet__video {
+  animation: hunting 1.5s ease-out;
+}
+
+@keyframes hunting {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.9) translateY(-5px);
+  }
+  60% {
+    transform: scale(1.2) translateY(-2px);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 放松状态 */
+.pet--relaxed .pet__emoji,
+.pet--relaxed .pet__image,
+.pet--relaxed .pet__video {
+  animation: relaxed 4s infinite ease-in-out;
+}
+
+@keyframes relaxed {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02) translateY(-1px);
+  }
+}
+
+/* 检查状态 */
+.pet--examining .pet__emoji,
+.pet--examining .pet__image,
+.pet--examining .pet__video {
+  animation: examining 2s ease-in-out;
+}
+
+@keyframes examining {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.05) rotate(-3deg);
+  }
+  75% {
+    transform: scale(1.05) rotate(3deg);
+  }
+}
+
+/* 欣赏状态 */
+.pet--admiring .pet__emoji,
+.pet--admiring .pet__image,
+.pet--admiring .pet__video {
+  animation: admiring 3s ease-in-out;
+}
+
+@keyframes admiring {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+/* 皇家状态 */
+.pet--royal .pet__emoji,
+.pet--royal .pet__image,
+.pet--royal .pet__video {
+  animation: royal 3s ease-in-out;
+}
+
+@keyframes royal {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    filter: brightness(1) hue-rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) translateY(-5px);
+    filter: brightness(1.2) hue-rotate(30deg);
+  }
+}
+
+/* 魔法状态 */
+.pet--magical .pet__emoji,
+.pet--magical .pet__image,
+.pet--magical .pet__video {
+  animation: magical 2s infinite ease-in-out;
+}
+
+@keyframes magical {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1) hue-rotate(0deg);
+  }
+  25% {
+    transform: scale(1.05) rotate(-2deg);
+    filter: brightness(1.2) hue-rotate(90deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(0deg);
+    filter: brightness(1.3) hue-rotate(180deg);
+  }
+  75% {
+    transform: scale(1.05) rotate(2deg);
+    filter: brightness(1.2) hue-rotate(270deg);
+  }
+}
+
+/* 狂欢状态 */
+.pet--euphoric .pet__emoji,
+.pet--euphoric .pet__image,
+.pet--euphoric .pet__video {
+  animation: euphoric 1.5s infinite ease-in-out;
+}
+
+@keyframes euphoric {
+  0%, 100% {
+    transform: scale(1) rotate(0deg) translateY(0);
+    filter: brightness(1) contrast(1) saturate(1);
+  }
+  25% {
+    transform: scale(1.15) rotate(-5deg) translateY(-8px);
+    filter: brightness(1.3) contrast(1.2) saturate(1.5);
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg) translateY(-12px);
+    filter: brightness(1.4) contrast(1.3) saturate(2);
+  }
+  75% {
+    transform: scale(1.15) rotate(5deg) translateY(-8px);
+    filter: brightness(1.3) contrast(1.2) saturate(1.5);
+  }
+}
+
+/* 更新气泡显示以包含道具状态 */
+.pet--eating .pet__bubble,
+.pet--drinking .pet__bubble,
+.pet--playing .pet__bubble,
+.pet--playful .pet__bubble,
+.pet--hunting .pet__bubble,
+.pet--relaxed .pet__bubble,
+.pet--examining .pet__bubble,
+.pet--admiring .pet__bubble,
+.pet--royal .pet__bubble,
+.pet--magical .pet__bubble,
+.pet--euphoric .pet__bubble,
+.pet--dragover .pet__bubble {
+  opacity: 1;
 }

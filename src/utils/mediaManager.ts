@@ -5,7 +5,7 @@
 
 import { PetConfig, AppConfig } from '../config/appConfig';
 
-export type PetState = 'idle' | 'hover' | 'active' | 'loading' | 'congrats' | 'walking' | 'sleeping' | 'observing' | 'yawning' | 'stretching';
+export type PetState = 'idle' | 'hover' | 'active' | 'loading' | 'congrats' | 'walking' | 'sleeping' | 'observing' | 'yawning' | 'stretching' | 'eating' | 'drinking' | 'playing' | 'playful' | 'hunting' | 'relaxed' | 'examining' | 'admiring' | 'royal' | 'magical' | 'euphoric';
 export type MediaType = 'image' | 'video';
 
 export interface MediaFile {
