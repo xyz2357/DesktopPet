@@ -53,15 +53,46 @@ japanese-pet/
 │   ├── components/          # React components
 │   │   ├── Pet.tsx         # Pet main component
 │   │   ├── StudyCard.tsx   # Study card component
+│   │   ├── ItemPanel.tsx   # Item inventory panel
+│   │   ├── ContextMenu.tsx # Right-click context menu
 │   │   └── *.css          # Component styles
 │   ├── data/
-│   │   └── cards.ts       # Vocabulary data and management logic
+│   │   ├── cards/          # Card data by type
+│   │   │   ├── words.json  # Word cards
+│   │   │   ├── sentences.json # Sentence cards
+│   │   │   ├── examples.json # Example cards
+│   │   │   ├── grammar.json # Grammar cards
+│   │   │   ├── images.json # Image cards
+│   │   │   ├── audio.json  # Audio cards
+│   │   │   ├── arrange.json # Arrange cards
+│   │   │   └── index.ts    # Data management
+│   │   ├── cards.ts        # Card manager (legacy)
+│   │   └── items.ts        # Item definitions
+│   ├── utils/              # Utility modules
+│   │   ├── itemManager.ts  # Item system manager
+│   │   ├── mediaManager.ts # Pet media management
+│   │   ├── autonomousBehavior.ts # AI behavior system
+│   │   ├── mouseTracker.ts # Mouse tracking
+│   │   ├── interactionManager.ts # User interactions
+│   │   ├── dragDropManager.ts # Drag & drop system
+│   │   ├── itemImageManager.ts # Item image loading
+│   │   └── customInteractionManager.ts # Custom interactions
 │   ├── types/
-│   │   └── card.ts        # TypeScript type definitions
+│   │   ├── card.ts         # Card type definitions
+│   │   ├── item.ts         # Item type definitions
+│   │   └── customInteraction.ts # Custom interaction types
+│   ├── config/
+│   │   ├── appConfig.ts    # Application configuration
+│   │   └── petTexts.ts     # Pet dialog texts
+│   ├── hooks/              # React hooks
 │   ├── App.tsx            # Main application component
 │   ├── main.ts            # Electron main process
 │   ├── preload.ts         # Preload script
 │   └── renderer.tsx       # Renderer process entry
+├── tests/                  # Test suite
+│   ├── unit/              # Unit tests
+│   ├── integration/       # Integration tests
+│   └── e2e/               # End-to-end tests
 ├── dist/                   # Build output directory
 ├── public/                 # Static assets
 └── webpack.config.js       # Webpack configuration
@@ -99,21 +130,22 @@ npm run package
 
 ### Data Description
 
-Current MVP contains 10 learning items:
+Current system includes a comprehensive learning card database with multiple card types:
 
-**Vocabulary (7 items)**
-- 勉強 (benkyou) - study
-- 友達 (tomodachi) - friend
-- 仕事 (shigoto) - work  
-- 美味しい (oishii) - delicious
-- 大きい (ookii) - big
-- 先生 (sensei) - teacher
-- 学校 (gakkou) - school
+**Card Types Available**:
+- **Word Cards** (words.json) - Japanese vocabulary with kana, romaji, and meanings
+- **Sentence Cards** (sentences.json) - Common phrases and expressions  
+- **Example Cards** (examples.json) - Usage examples in context
+- **Grammar Cards** (grammar.json) - Grammar patterns and rules
+- **Image Cards** (images.json) - Visual learning cards
+- **Audio Cards** (audio.json) - Pronunciation practice cards
+- **Arrange Cards** (arrange.json) - Sentence construction exercises
 
-**Phrases (3 items)**
-- おはようございます - Good morning
-- ありがとうございます - Thank you
-- すみません - Sorry/Excuse me
+**Additional Features**:
+- JLPT level classification (N5-N1)
+- Difficulty rating system
+- Category-based organization
+- Related card recommendations
 
 ### Development Plan
 
@@ -198,15 +230,46 @@ japanese-pet/
 │   ├── components/          # React 组件
 │   │   ├── Pet.tsx         # 桌宠主体组件
 │   │   ├── StudyCard.tsx   # 学习卡片组件
+│   │   ├── ItemPanel.tsx   # 道具面板
+│   │   ├── ContextMenu.tsx # 右键上下文菜单
 │   │   └── *.css          # 组件样式
 │   ├── data/
-│   │   └── cards.ts       # 词汇数据和管理逻辑
+│   │   ├── cards/          # 按类型分类的卡片数据
+│   │   │   ├── words.json  # 单词卡
+│   │   │   ├── sentences.json # 句子卡
+│   │   │   ├── examples.json # 例句卡
+│   │   │   ├── grammar.json # 语法卡
+│   │   │   ├── images.json # 图片卡
+│   │   │   ├── audio.json  # 音频卡
+│   │   │   ├── arrange.json # 拖拽卡
+│   │   │   └── index.ts    # 数据管理
+│   │   ├── cards.ts        # 卡片管理器（旧版）
+│   │   └── items.ts        # 道具定义
+│   ├── utils/              # 工具模块
+│   │   ├── itemManager.ts  # 道具系统管理器
+│   │   ├── mediaManager.ts # 桌宠媒体管理
+│   │   ├── autonomousBehavior.ts # AI行为系统
+│   │   ├── mouseTracker.ts # 鼠标跟踪
+│   │   ├── interactionManager.ts # 用户交互
+│   │   ├── dragDropManager.ts # 拖拽系统
+│   │   ├── itemImageManager.ts # 道具图像加载
+│   │   └── customInteractionManager.ts # 自定义互动
 │   ├── types/
-│   │   └── card.ts        # TypeScript 类型定义
+│   │   ├── card.ts         # 卡片类型定义
+│   │   ├── item.ts         # 道具类型定义
+│   │   └── customInteraction.ts # 自定义互动类型
+│   ├── config/
+│   │   ├── appConfig.ts    # 应用配置
+│   │   └── petTexts.ts     # 桌宠对话文本
+│   ├── hooks/              # React hooks
 │   ├── App.tsx            # 主应用组件
 │   ├── main.ts            # Electron 主进程
 │   ├── preload.ts         # 预加载脚本
 │   └── renderer.tsx       # 渲染进程入口
+├── tests/                  # 测试套件
+│   ├── unit/              # 单元测试
+│   ├── integration/       # 集成测试
+│   └── e2e/               # 端到端测试
 ├── dist/                   # 构建输出目录
 ├── public/                 # 静态资源
 └── webpack.config.js       # Webpack 配置
@@ -244,21 +307,22 @@ npm run package
 
 ## 数据说明
 
-当前 MVP 包含 10 个学习项目：
+当前系统包含完整的学习卡片数据库，支持多种卡片类型：
 
-**词汇 (7个)**
-- 勉強 (benkyou) - 学习
-- 友達 (tomodachi) - 朋友  
-- 仕事 (shigoto) - 工作
-- 美味しい (oishii) - 好吃的
-- 大きい (ookii) - 大的
-- 先生 (sensei) - 老师
-- 学校 (gakkou) - 学校
+**可用卡片类型**：
+- **单词卡** (words.json) - 日语词汇，包含假名、罗马音和释义
+- **句子卡** (sentences.json) - 常用短语和表达
+- **例句卡** (examples.json) - 上下文中的使用示例
+- **语法卡** (grammar.json) - 语法模式和规则
+- **图片卡** (images.json) - 视觉学习卡片
+- **音频卡** (audio.json) - 发音练习卡片
+- **拖拽卡** (arrange.json) - 句子构造练习
 
-**短句 (3个)**
-- おはようございます - 早上好
-- ありがとうございます - 谢谢
-- すみません - 对不起/不好意思
+**附加功能**：
+- JLPT等级分类 (N5-N1)
+- 难度评级系统
+- 基于类别的组织
+- 相关卡片推荐
 
 ## 开发计划
 

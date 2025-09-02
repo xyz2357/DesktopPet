@@ -32,9 +32,9 @@ src/data/cards/
   "jp": "勉強",
   "kana": "べんきょう", 
   "romaji": "benkyou",
-  "cn": "study",
+  "cn": "学习",
   "example_jp": "日本語を勉強します。",
-  "example_cn": "I study Japanese.",
+  "example_cn": "我学习日语。",
   "jlpt": "N5",
   "difficulty": 1,
   "category": "education",
@@ -67,7 +67,7 @@ src/data/cards/
   "jp": "部屋が明るいです。",
   "kana": "へやがあかるいです。",
   "romaji": "heya ga akarui desu.",
-  "cn": "The room is bright.",
+  "cn": "房间很明亮。",
   "jlpt": "N5", 
   "difficulty": 1,
   "category": "description",
@@ -87,7 +87,7 @@ src/data/cards/
   "grammar_pattern": "V-ている",
   "grammar_explanation": "Expresses ongoing action or continuous state. Used to describe things happening now or ongoing conditions.",
   "example_jp": "今、勉強しています。",
-  "example_cn": "I am studying now.",
+  "example_cn": "现在正在学习。",
   "jlpt": "N5",
   "difficulty": 2,
   "category": "verb-form",
@@ -97,6 +97,67 @@ src/data/cards/
   "related_grammar": ["〜ていた", "〜てある"]
 }
 ```
+
+### Data Management API
+
+#### Basic Import
+```typescript
+import { allCards, cardsByType, getRandomCard } from './data/cards/index';
+```
+
+#### Main Functions
+
+1. **Get All Cards**: `allCards`
+2. **Group by Type**: `cardsByType.word`, `cardsByType.grammar`, etc.
+3. **Group by JLPT Level**: `cardsByJLPT.N5`, `cardsByJLPT.N4`, etc.
+4. **Search Cards**: `searchCards(query, type?, jlpt?)`
+5. **Get Random Card**: `getRandomCard(type?, jlpt?)`
+6. **Get Related Cards**: `getRelatedCards(card, limit)`
+
+#### Data Statistics
+```typescript
+import { dataStats } from './data/cards/index';
+
+console.log(dataStats);
+// Output:
+// {
+//   totalCards: 32,
+//   cardsByType: { word: 10, sentence: 5, ... },
+//   cardsByJLPT: { N5: 25, N4: 7, ... }
+// }
+```
+
+### Extending Data
+
+#### Adding New Cards
+1. Add new card data to corresponding JSON file
+2. Ensure all fields are complete and follow type definitions
+3. ID naming convention: type prefix + incremental number (e.g., w001, g001, ar001)
+
+#### Adding New Fields
+1. Extend `CardData` interface in `src/types/card.ts`
+2. Add new fields to corresponding JSON files
+3. Update components and styles to support new fields
+
+#### Creating New Card Types
+1. Add new type to `type` field in `src/types/card.ts`
+2. Create new JSON data file
+3. Import and merge data in `src/data/cards/index.ts`
+4. Update `StudyCard` component to support rendering of new type
+
+### Data File Maintenance
+
+- All JSON files need to maintain UTF-8 encoding
+- Ensure JSON format is correct (use online JSON validators)
+- Each card's ID must be unique
+- Recommend using appropriate code editors for JSON syntax highlighting and validation
+
+### Performance Considerations
+
+- JSON files are bundled by webpack at build time
+- Data is fully loaded into memory at application startup
+- For large datasets, consider implementing lazy loading or pagination
+- Current data volume is suitable for memory loading, future database storage can be considered
 
 ---
 

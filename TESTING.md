@@ -70,43 +70,34 @@ src/
 
 ## Current Test Coverage
 
-The test suite includes 60+ test cases covering:
+The test suite includes 316 test cases across 23 test suites covering:
 
-### Component Tests (Pet.test.tsx)
-- Pet emoji states (idle, loading, active)
-- Hover behavior and state changes
-- Click vs drag differentiation
-- Context menu functionality
-- Drag and drop mechanics
-- Mouse event handling
+### Unit Tests (23 test suites)
+- **Pet.test.tsx** - Pet emoji states, hover behavior, drag mechanics, mouse events
+- **StudyCard.test.tsx** - Card rendering, translation toggle, answer buttons, keyboard shortcuts
+- **ContextMenu.test.tsx** - Menu visibility, event listeners, click handling
+- **App.test.tsx** - Main application component integration
+- **cards.test.ts** - CardManager, SRS algorithm, review pool management
+- **electronAPI.test.ts** - Electron IPC communication, error handling
+- **items.test.ts** - Item data validation, types, effects, localization
+- **itemManager.test.ts** - Item usage, cooldowns, statistics, event listeners
+- **dragDropManager.test.ts** - Drag & drop functionality, drop zones, state management
+- **itemImageManager.test.ts** - Image loading, caching, error handling
+- **autonomousBehavior.test.ts** - AI behavior patterns, state transitions
+- **mouseTracker.test.ts** - Mouse tracking, position updates
+- **interactionManager.test.ts** - User interactions, time-based emotions
+- **mediaManager.test.ts** - Pet media loading and management
+- **appConfig.test.ts** - Application configuration validation
+- **cardUtils.test.ts** - Card utility functions
+- **useStudyCardState.test.ts** - React hooks for study cards
+- **StudyCard.a11y.test.ts** - Accessibility testing
 
-### Component Tests (StudyCard.test.tsx)
-- Card rendering for different card types
-- Translation toggle functionality
-- Answer button interactions
-- Keyboard shortcuts (Escape key)
-- Overlay click handling
-- TTS button interactions
-
-### Component Tests (ContextMenu.test.tsx)
-- Menu visibility and positioning
-- Event listener setup and cleanup
-- Click outside handling
-- Menu item interactions
-
-### Business Logic Tests (cards.test.ts)
-- CardManager initialization and shuffling
-- Card retrieval logic
-- Review pool management
-- SRS algorithm behavior
-- Answer submission handling
-- Probability-based review scheduling
-
-### API Tests (electronAPI.test.ts)
-- Electron IPC communication
-- Mock API interactions
-- Error handling
-- Parameter validation
+### Integration Tests (5 test suites)
+- **item-system-integration.test.tsx** - Item panel & pet interaction
+- **pet-autonomous-behavior.test.tsx** - Autonomous behavior integration
+- **mouse-tracking-integration.test.tsx** - Mouse tracking with pet responses
+- **easter-eggs-integration.test.tsx** - Hidden interaction features
+- **time-emotion-integration.test.tsx** - Time-based emotional states
 
 ## Test Configuration
 
@@ -137,7 +128,7 @@ npm install
 # Run all unit tests
 npm test
 
-# Expected output: All tests pass with 60+ test cases
+# Expected output: All tests pass with 316 test cases across 23 suites
 ```
 
 ### Coverage Analysis
@@ -246,43 +237,34 @@ src/
 
 ## 当前测试覆盖率
 
-测试套件包含60+个测试用例，覆盖：
+测试套件包含316个测试用例，分布在23个测试套件中，覆盖：
 
-### 组件测试 (Pet.test.tsx)
-- 桌宠emoji状态（空闲、加载、活跃）
-- 悬停行为和状态变化
-- 点击与拖拽区分
-- 上下文菜单功能
-- 拖拽机制
-- 鼠标事件处理
+### 单元测试 (18个测试套件)
+- **Pet.test.tsx** - 桌宠emoji状态、悬停行为、拖拽机制、鼠标事件
+- **StudyCard.test.tsx** - 卡片渲染、翻译切换、答案按钮、键盘快捷键
+- **ContextMenu.test.tsx** - 菜单可见性、事件监听器、点击处理
+- **App.test.tsx** - 主应用组件集成
+- **cards.test.ts** - 卡片管理器、SRS算法、复习池管理
+- **electronAPI.test.ts** - Electron IPC通信、错误处理
+- **items.test.ts** - 道具数据验证、类型、效果、本地化
+- **itemManager.test.ts** - 道具使用、冷却时间、统计、事件监听器
+- **dragDropManager.test.ts** - 拖拽功能、放置区域、状态管理
+- **itemImageManager.test.ts** - 图像加载、缓存、错误处理
+- **autonomousBehavior.test.ts** - AI行为模式、状态转换
+- **mouseTracker.test.ts** - 鼠标跟踪、位置更新
+- **interactionManager.test.ts** - 用户交互、基于时间的情绪
+- **mediaManager.test.ts** - 桌宠媒体加载和管理
+- **appConfig.test.ts** - 应用配置验证
+- **cardUtils.test.ts** - 卡片工具函数
+- **useStudyCardState.test.ts** - 学习卡片的React hooks
+- **StudyCard.a11y.test.ts** - 无障碍功能测试
 
-### 组件测试 (StudyCard.test.tsx)
-- 不同卡片类型的渲染
-- 翻译切换功能
-- 答案按钮交互
-- 键盘快捷键（Escape键）
-- 遮罩点击处理
-- TTS按钮交互
-
-### 组件测试 (ContextMenu.test.tsx)
-- 菜单可见性和定位
-- 事件监听器设置和清理
-- 外部点击处理
-- 菜单项交互
-
-### 业务逻辑测试 (cards.test.ts)
-- CardManager初始化和洗牌
-- 卡片检索逻辑
-- 复习池管理
-- SRS算法行为
-- 答案提交处理
-- 基于概率的复习调度
-
-### API测试 (electronAPI.test.ts)
-- Electron IPC通信
-- Mock API交互
-- 错误处理
-- 参数验证
+### 集成测试 (5个测试套件)
+- **item-system-integration.test.tsx** - 道具面板与桌宠交互
+- **pet-autonomous-behavior.test.tsx** - 自主行为集成
+- **mouse-tracking-integration.test.tsx** - 鼠标跟踪与桌宠响应
+- **easter-eggs-integration.test.tsx** - 隐藏互动功能
+- **time-emotion-integration.test.tsx** - 基于时间的情绪状态
 
 ## 测试配置
 
@@ -313,7 +295,7 @@ npm install
 # 运行所有单元测试
 npm test
 
-# 预期输出：所有测试通过，60+个测试用例
+# 预期输出：所有测试通过，23个套件中的316个测试用例
 ```
 
 ### 覆盖率分析

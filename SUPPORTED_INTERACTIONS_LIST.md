@@ -132,15 +132,17 @@ These interactions are triggered when using items from the inventory:
 
 #### Special Items 🎪
 
-12. **Magic Wand** ⭐
-    - **Effect**: Magical transformation, euphoric state
-    - **Message**: "魔法の力を感じる！"
-    - **Animation**: Magical effects
+12. **Magic Wand** 🪄
+    - **Effect**: Magical state, special powers
+    - **Message**: "アブラカダブラ！"
+    - **Animation**: Sparkle effects
+    - **Duration**: 3 minutes magical powers
 
 13. **Rainbow** 🌈
-    - **Effect**: Ultimate happiness, euphoric state
-    - **Message**: "虹だ！幸せ！"
-    - **Animation**: Euphoric celebration
+    - **Effect**: Ultimate happiness + energy + mood boost
+    - **Message**: "最高の気分！"
+    - **Animation**: Rainbow dance
+    - **Duration**: 20 seconds euphoric + 5 minutes rainbow aura
 
 ---
 
@@ -285,15 +287,17 @@ Built-in system responses that don't require configuration:
 
 #### 特殊类 🎪
 
-12. **魔法棒** ⭐
-    - **效果**: 魔法变身，极乐状态
-    - **消息**: "魔法の力を感じる！"
-    - **动画**: 魔法效果
+12. **魔法棒** 🪄
+    - **效果**: 魔法状态，特殊能力
+    - **消息**: "アブラカダブラ！"
+    - **动画**: 闪光效果
+    - **持续时间**: 3分钟魔法能力
 
 13. **彩虹** 🌈
-    - **效果**: 终极幸福，极乐状态
-    - **消息**: "虹だ！幸せ！"
-    - **动画**: 欢乐庆祝
+    - **效果**: 终极幸福+能量+心情提升
+    - **消息**: "最高の気分！"
+    - **动画**: 彩虹舞蹈
+    - **持续时间**: 20秒极乐状态+5分钟彩虹光环
 
 ---
 
@@ -319,12 +323,12 @@ Built-in system responses that don't require configuration:
 
 ### Item Interactions / 道具互动
 - **Total Items**: 16 items across 6 categories / 6个类别共16个道具
-- **Food Items**: 3 / 食物类：3个
-- **Toy Items**: 3 / 玩具类：3个
-- **Tool Items**: 2 / 工具类：2个
-- **Medicine Items**: 1 / 药品类：1个
-- **Decoration Items**: 2 / 装饰类：2个
-- **Special Items**: 2 / 特殊类：2个
+- **Food Items**: 3 (Fish, Milk, Cake) / 食物类：3个 (鱼、牛奶、蛋糕)
+- **Toy Items**: 3 (Ball, Yarn, Toy Mouse) / 玩具类：3个 (球、毛线、玩具老鼠)
+- **Tool Items**: 2 (Brush, Thermometer) / 工具类：2个 (刷子、温度计)
+- **Medicine Items**: 1 (Vitamin) / 药品类：1个 (维生素)
+- **Decoration Items**: 2 (Flower, Crown) / 装饰类：2个 (花朵、皇冠)
+- **Special Items**: 2 (Magic Wand, Rainbow) / 特殊类：2个 (魔法棒、彩虹)
 
 ### System Interactions / 系统互动
 - **Basic Interactions**: 6 types / 基础互动：6种类型
