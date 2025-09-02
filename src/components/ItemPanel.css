@@ -141,10 +141,30 @@
   filter: grayscale(50%);
 }
 
-.item-card__emoji {
+.item-card__icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 8px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.item-card__emoji-fallback {
   font-size: 32px;
-  margin-bottom: 8px;
   line-height: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .item-card__name {

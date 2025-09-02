@@ -9,6 +9,8 @@ import { interactionManager, InteractionEvent, TimeBasedEmotion } from '../utils
 import { itemManager } from '../utils/itemManager';
 import { dragDropManager, DropZone } from '../utils/dragDropManager';
 import { ItemData, PetReaction } from '../types/item';
+import { customInteractionManager } from '../utils/customInteractionManager';
+import { InteractionContext, InteractionResult } from '../types/customInteraction';
 import './Pet.css';
 
 // Import placeholder images
@@ -65,6 +67,12 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   const specialMessageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const emotionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
+  // 自定义互动状态
+  const [customInteractionMessage, setCustomInteractionMessage] = useState<string>('');
+  const [customInteractionState, setCustomInteractionState] = useState<PetState | null>(null);
+  const customMessageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const customStateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
   // 道具系统状态
   const [itemReaction, setItemReaction] = useState<PetReaction | null>(null);
   const [currentItemState, setCurrentItemState] = useState<PetState | null>(null);
@@ -74,7 +82,8 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   const petElementRef = useRef<HTMLDivElement | null>(null);
   
   const getPetState = (): PetState => {
-    // 优先级：道具反应状态 > 用户交互状态 > 自主行为状态
+    // 优先级：自定义互动状态 > 道具反应状态 > 用户交互状态 > 自主行为状态
+    if (customInteractionState) return customInteractionState;
     if (currentItemState) return currentItemState;
     if (isCongrats) return 'congrats';
     if (isLoading) return 'loading';
@@ -94,6 +103,28 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   // 判断是否为道具相关状态
   const isItemState = (state: PetState): boolean => {
     return ['eating', 'drinking', 'playing', 'playful', 'hunting', 'relaxed', 'examining', 'admiring', 'royal', 'magical', 'euphoric'].includes(state);
+  };
+
+  // 构建互动上下文
+  const buildInteractionContext = (): InteractionContext => {
+    const now = new Date();
+    const currentState = getPetState();
+    
+    return {
+      currentState,
+      mousePosition: { x: 0, y: 0 }, // 会在实际使用时更新
+      petPosition: position,
+      time: {
+        hour: now.getHours(),
+        minute: now.getMinutes(),
+        dayOfWeek: now.getDay(),
+        timestamp: now.getTime()
+      },
+      timestamp: now.getTime(),
+      lastInteraction: lastUserInteractionRef.current,
+      attributes: customInteractionManager.getAllAttributes(),
+      lastUsedItem: undefined // 会在道具系统中设置
+    };
   };
 
   // 媒体管理器初始化和初始媒体文件加载
@@ -200,6 +231,122 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   useEffect(() => {
     mouseTracker.updatePetData(position, mediaDimensions);
   }, [position, mediaDimensions]);
+
+  // 自定义互动管理器初始化
+  useEffect(() => {
+    const initCustomInteractions = async () => {
+      await customInteractionManager.initialize();
+      
+      // 监听自定义互动结果
+      const handleCustomInteractionResult = (result: InteractionResult) => {
+        if (result.success && result.reaction) {
+          const reaction = result.reaction;
+          
+          // 设置文本消息
+          if (reaction.text) {
+            setCustomInteractionMessage(reaction.text);
+            
+            if (customMessageTimeoutRef.current) {
+              clearTimeout(customMessageTimeoutRef.current);
+            }
+            
+            customMessageTimeoutRef.current = setTimeout(() => {
+              setCustomInteractionMessage('');
+            }, reaction.textDuration || 3000);
+          }
+          
+          // 设置状态变化
+          if (reaction.state) {
+            setCustomInteractionState(reaction.state as PetState);
+            
+            if (customStateTimeoutRef.current) {
+              clearTimeout(customStateTimeoutRef.current);
+            }
+            
+            customStateTimeoutRef.current = setTimeout(() => {
+              setCustomInteractionState(null);
+            }, reaction.stateDuration || 5000);
+          }
+          
+          // 获取新的媒体文件（如果状态改变）
+          if (reaction.state) {
+            const mediaFile = mediaManager.getRandomMediaForState(reaction.state as PetState);
+            if (mediaFile) {
+              setCurrentMedia(prev => ({ ...prev, [reaction.state as string]: mediaFile }));
+            }
+          }
+          
+          // 处理链式反应
+          if (result.nextInteractions && result.nextInteractions.length > 0) {
+            // 延迟执行链式互动
+            setTimeout(() => {
+              const context = buildInteractionContext();
+              result.nextInteractions!.forEach(async (interactionId) => {
+                await customInteractionManager.triggerInteraction('custom', context, interactionId);
+              });
+            }, 1000);
+          }
+        }
+      };
+      
+      customInteractionManager.addListener(handleCustomInteractionResult);
+    };
+    
+    initCustomInteractions().catch(console.error);
+    
+    return () => {
+      if (customMessageTimeoutRef.current) {
+        clearTimeout(customMessageTimeoutRef.current);
+      }
+      if (customStateTimeoutRef.current) {
+        clearTimeout(customStateTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // 键盘事件监听器
+  useEffect(() => {
+    const handleKeyPress = async (event: KeyboardEvent) => {
+      // 触发自定义互动 - 键盘事件
+      try {
+        const context = buildInteractionContext();
+        await customInteractionManager.triggerInteraction('keyboard', {
+          ...context,
+          userInput: event.code
+        });
+      } catch (error) {
+        console.warn('键盘自定义互动触发失败:', error);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
+  // 时间触发器 - 定期检查时间相关的自定义互动
+  useEffect(() => {
+    const checkTimeBasedInteractions = async () => {
+      try {
+        const context = buildInteractionContext();
+        await customInteractionManager.triggerInteraction('time', context);
+      } catch (error) {
+        console.warn('时间触发互动失败:', error);
+      }
+    };
+
+    // 每30秒检查一次时间触发条件
+    const intervalId = setInterval(checkTimeBasedInteractions, 30000);
+    
+    // 初始检查
+    checkTimeBasedInteractions();
+    
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   // 交互管理器初始化
   useEffect(() => {
@@ -397,7 +544,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   };
 
   // 处理点击交互和彩蛋
-  const handlePetClick = () => {
+  const handlePetClick = async () => {
     handleUserInteraction();
     
     // 处理交互管理器的点击事件
@@ -422,6 +569,14 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
       if (interactionEvent.type === 'rapidClick') {
         console.log('🔥 触发快速点击彩蛋！');
       }
+    }
+    
+    // 触发自定义互动 - 点击事件
+    try {
+      const context = buildInteractionContext();
+      await customInteractionManager.triggerInteraction('click', context);
+    } catch (error) {
+      console.warn('自定义互动触发失败:', error);
     }
     
     // 调用原有的点击处理
@@ -646,10 +801,18 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         } as React.CSSProperties}
         onMouseDown={handleMouseDown}
         onContextMenu={handleContextMenu}
-        onMouseEnter={() => {
+        onMouseEnter={async () => {
           setIsHovered(true);
           onHoverChange(true);
           handleUserInteraction(); // 通知用户交互
+          
+          // 触发自定义互动 - 悬停事件
+          try {
+            const context = buildInteractionContext();
+            await customInteractionManager.triggerInteraction('hover', context);
+          } catch (error) {
+            console.warn('自定义互动触发失败:', error);
+          }
         }}
         onMouseLeave={() => {
           setIsHovered(false);
@@ -735,22 +898,23 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
           )}
         </div>
         <div className="pet__bubble">
-          {/* 优先级：道具反应 > 特殊消息 > 时间感知情绪 > 常规状态 */}
+          {/* 优先级：道具反应 > 自定义互动消息 > 特殊消息 > 时间感知情绪 > 常规状态 */}
           {itemReaction?.message && <span style={{color: '#ff9800', fontWeight: 'bold'}}>{itemReaction.message}</span>}
-          {!itemReaction?.message && specialMessage && <span style={{color: '#ff6b35', fontWeight: 'bold'}}>{specialMessage}</span>}
-          {!itemReaction?.message && !specialMessage && timeBasedEmotion && <span style={{color: '#4a90e2', fontStyle: 'italic'}}>{timeBasedEmotion.text}</span>}
-          {isDraggedOver && !itemReaction?.message && !specialMessage && !timeBasedEmotion && <span style={{color: '#4a90e2', fontWeight: 'bold'}}>ここに放して！</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && isCongrats && <span>{PetTexts.bubbleTexts.congrats}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.thinking}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && isActive && !isCongrats && <span>{PetTexts.bubbleTexts.ready}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.dragging}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && isFollowingMouse && !isDragging && !isActive && !isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.followingMouse}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'walking' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.walking}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'sleeping' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.sleeping}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'observing' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.observing}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'yawning' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.yawning}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'stretching' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.stretching}</span>}
-          {!itemReaction?.message && !specialMessage && !timeBasedEmotion && !isDraggedOver && isHovered && !isActive && !isLoading && !isDragging && !isCongrats && !isAutonomousState(autonomousState) && <span>{PetTexts.bubbleTexts.hover}</span>}
+          {!itemReaction?.message && customInteractionMessage && <span style={{color: '#e91e63', fontWeight: 'bold'}}>{customInteractionMessage}</span>}
+          {!itemReaction?.message && !customInteractionMessage && specialMessage && <span style={{color: '#ff6b35', fontWeight: 'bold'}}>{specialMessage}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && timeBasedEmotion && <span style={{color: '#4a90e2', fontStyle: 'italic'}}>{timeBasedEmotion.text}</span>}
+          {isDraggedOver && !itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && <span style={{color: '#4a90e2', fontWeight: 'bold'}}>ここに放して！</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && isCongrats && <span>{PetTexts.bubbleTexts.congrats}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.thinking}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && isActive && !isCongrats && <span>{PetTexts.bubbleTexts.ready}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.dragging}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && isFollowingMouse && !isDragging && !isActive && !isLoading && !isCongrats && <span>{PetTexts.bubbleTexts.followingMouse}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'walking' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.walking}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'sleeping' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.sleeping}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'observing' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.observing}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'yawning' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.yawning}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && autonomousState === 'stretching' && !isHovered && !isActive && !isLoading && !isDragging && !isCongrats && <span>{PetTexts.bubbleTexts.stretching}</span>}
+          {!itemReaction?.message && !customInteractionMessage && !specialMessage && !timeBasedEmotion && !isDraggedOver && isHovered && !isActive && !isLoading && !isDragging && !isCongrats && !isAutonomousState(autonomousState) && <span>{PetTexts.bubbleTexts.hover}</span>}
         </div>
       </div>
       

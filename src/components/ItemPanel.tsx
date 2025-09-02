@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ItemData } from '../types/item';
 import { itemManager } from '../utils/itemManager';
 import { dragDropManager } from '../utils/dragDropManager';
+import { itemImageManager } from '../utils/itemImageManager';
 import './ItemPanel.css';
 
 interface ItemPanelProps {
@@ -16,10 +17,18 @@ const ItemPanel: React.FC<ItemPanelProps> = ({ visible, onClose, onItemDragStart
   const [cooldowns, setCooldowns] = useState<Map<string, number>>(new Map());
   const [isDragging, setIsDragging] = useState(false);
 
-  // 加载道具列表
+  // 加载道具列表和图标
   useEffect(() => {
-    const allItems = itemManager.getAllItems();
-    setItems(allItems);
+    const initializeItems = async () => {
+      // 初始化道具图标管理器
+      await itemImageManager.initialize();
+      
+      // 加载道具列表
+      const allItems = itemManager.getAllItems();
+      setItems(allItems);
+    };
+    
+    initializeItems().catch(console.error);
   }, []);
 
   // 更新冷却时间
@@ -207,7 +216,36 @@ const ItemPanel: React.FC<ItemPanelProps> = ({ visible, onClose, onItemDragStart
                 } as React.CSSProperties}
                 title={item.description}
               >
-                <div className="item-card__emoji">{item.emoji}</div>
+                <div className="item-card__icon">
+                  {(() => {
+                    const imageUrl = itemImageManager.getItemImageUrl(item.id);
+                    if (imageUrl) {
+                      return (
+                        <img 
+                          src={imageUrl} 
+                          alt={item.name}
+                          className="item-card__image"
+                          onError={(e) => {
+                            // 如果图片加载失败，隐藏图片元素，显示emoji
+                            e.currentTarget.style.display = 'none';
+                            const emojiDiv = e.currentTarget.parentElement?.querySelector('.item-card__emoji-fallback') as HTMLElement;
+                            if (emojiDiv) {
+                              emojiDiv.style.display = 'block';
+                            }
+                          }}
+                        />
+                      );
+                    } else {
+                      return null;
+                    }
+                  })()}
+                  <div 
+                    className="item-card__emoji-fallback" 
+                    style={{ display: itemImageManager.hasCustomImage(item.id) ? 'none' : 'block' }}
+                  >
+                    {item.emoji}
+                  </div>
+                </div>
                 <div className="item-card__name">{item.nameJa || item.name}</div>
                 
                 {status.cooldownRemaining > 0 && (

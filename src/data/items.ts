@@ -11,6 +11,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🐟',
     type: 'food',
     rarity: 'common',
+    image: 'fish', // 图片文件名（不含扩展名）
     effects: [
       { type: 'happiness_increase', value: 20, duration: 5000 },
       { type: 'text_display', value: 'おいしい！', duration: 3000 },
@@ -26,6 +27,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🥛',
     type: 'food',
     rarity: 'common',
+    image: 'milk',
     effects: [
       { type: 'energy_restore', value: 30, duration: 3000 },
       { type: 'text_display', value: 'ごくごく...', duration: 2000 },
@@ -41,6 +43,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🍰',
     type: 'food',
     rarity: 'uncommon',
+    image: 'cake',
     effects: [
       { type: 'happiness_increase', value: 50, duration: 10000 },
       { type: 'mood_boost', value: 40, duration: 15000 },
@@ -59,6 +62,7 @@ export const defaultItems: ItemData[] = [
     emoji: '⚽',
     type: 'toy',
     rarity: 'common',
+    image: 'ball',
     effects: [
       { type: 'mood_boost', value: 25, duration: 8000 },
       { type: 'text_display', value: '遊ぼう！', duration: 2000 },
@@ -74,6 +78,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🧶',
     type: 'toy',
     rarity: 'common',
+    image: 'yarn',
     effects: [
       { type: 'happiness_increase', value: 15, duration: 12000 },
       { type: 'text_display', value: 'ふわふわ〜', duration: 2000 },
@@ -89,6 +94,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🐭',
     type: 'toy',
     rarity: 'uncommon',
+    image: 'toy_mouse',
     effects: [
       { type: 'state_change', value: 'hunting', duration: 6000 },
       { type: 'text_display', value: 'にゃー！', duration: 2000 },
@@ -106,6 +112,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🪥',
     type: 'tool',
     rarity: 'common',
+    image: 'brush',
     effects: [
       { type: 'mood_boost', value: 30, duration: 5000 },
       { type: 'text_display', value: '気持ちいい〜', duration: 3000 },
@@ -121,6 +128,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🌡️',
     type: 'tool',
     rarity: 'uncommon',
+    image: 'thermometer',
     effects: [
       { type: 'text_display', value: '健康チェック中...', duration: 3000 },
       { type: 'state_change', value: 'examining', duration: 4000 }
@@ -137,6 +145,7 @@ export const defaultItems: ItemData[] = [
     emoji: '💊',
     type: 'medicine',
     rarity: 'common',
+    image: 'vitamin',
     effects: [
       { type: 'energy_restore', value: 40, duration: 2000 },
       { type: 'text_display', value: '元気になった！', duration: 3000 },
@@ -155,6 +164,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🌸',
     type: 'decoration',
     rarity: 'common',
+    image: 'flower',
     effects: [
       { type: 'mood_boost', value: 20, duration: 15000 },
       { type: 'text_display', value: 'きれい〜', duration: 2000 },
@@ -170,6 +180,7 @@ export const defaultItems: ItemData[] = [
     emoji: '👑',
     type: 'decoration',
     rarity: 'rare',
+    image: 'crown',
     effects: [
       { type: 'happiness_increase', value: 60, duration: 20000 },
       { type: 'mood_boost', value: 50, duration: 25000 },
@@ -190,6 +201,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🪄',
     type: 'special',
     rarity: 'epic',
+    image: 'magic_wand',
     effects: [
       { type: 'state_change', value: 'magical', duration: 10000 },
       { type: 'text_display', value: 'アブラカダブラ！', duration: 3000 },
@@ -208,6 +220,7 @@ export const defaultItems: ItemData[] = [
     emoji: '🌈',
     type: 'special',
     rarity: 'legendary',
+    image: 'rainbow',
     effects: [
       { type: 'happiness_increase', value: 100, duration: 30000 },
       { type: 'mood_boost', value: 80, duration: 45000 },

@@ -109,12 +109,23 @@ export class MediaManager {
           return (require as any).context('../assets/pet-media/loading', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
         case 'congrats':
           return (require as any).context('../assets/pet-media/congrats', false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);
-        // 新增的自主行为状态，如果文件夹不存在会回退到默认文件
+        // 新增的自主行为状态和道具状态，如果文件夹不存在会回退到默认文件
         case 'walking':
         case 'sleeping':
         case 'observing':
         case 'yawning':
         case 'stretching':
+        case 'eating':
+        case 'drinking':
+        case 'playing':
+        case 'playful':
+        case 'hunting':
+        case 'relaxed':
+        case 'examining':
+        case 'admiring':
+        case 'royal':
+        case 'magical':
+        case 'euphoric':
           // 尝试加载对应文件夹，如果不存在则回退到idle状态的媒体
           try {
             return (require as any).context(`../assets/pet-media/${state}`, false, /\.(png|jpe?g|gif|webp|mp4|webm)$/i);

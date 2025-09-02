@@ -1,0 +1,321 @@
+{
+  "version": "1.0.0",
+  "name": "Default Interactions",
+  "description": "Default interaction set for Japanese Pet",
+  "author": "Japanese Pet Team",
+  "settings": {
+    "enabled": true,
+    "debugMode": false,
+    "maxConcurrentInteractions": 3
+  },
+  "attributes": [
+    {
+      "name": "happiness",
+      "displayName": "Happiness",
+      "displayNameJa": "幸福度",
+      "type": "number",
+      "defaultValue": 50,
+      "min": 0,
+      "max": 100,
+      "description": "Pet's happiness level"
+    },
+    {
+      "name": "energy",
+      "displayName": "Energy",
+      "displayNameJa": "エネルギー",
+      "type": "number",
+      "defaultValue": 70,
+      "min": 0,
+      "max": 100,
+      "description": "Pet's energy level"
+    },
+    {
+      "name": "mood",
+      "displayName": "Mood",
+      "displayNameJa": "気分",
+      "type": "string",
+      "defaultValue": "normal",
+      "description": "Pet's current mood"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "morning_greeting",
+      "name": "Morning Greeting",
+      "nameJa": "朝の挨拶",
+      "description": "Special greeting in the morning",
+      "descriptionJa": "朝の特別な挨拶",
+      "triggers": [
+        {
+          "type": "time",
+          "value": "06:00-10:00"
+        },
+        {
+          "type": "click"
+        }
+      ],
+      "reaction": {
+        "text": "おはよう！今日も一緒に日本語を勉強しよう！",
+        "textDuration": 4000,
+        "textStyle": {
+          "color": "#ff9800",
+          "animation": "bounce"
+        },
+        "media": {
+          "conditional": [
+            {
+              "condition": {
+                "type": "attribute",
+                "value": "happiness > 70"
+              },
+              "media": "morning_happy"
+            },
+            {
+              "condition": {
+                "type": "attribute", 
+                "value": "happiness < 30"
+              },
+              "media": "morning_sad"
+            }
+          ],
+          "fallback": "morning_normal"
+        },
+        "attributes": [
+          {
+            "name": "happiness",
+            "operation": "add",
+            "value": 10,
+            "duration": 30000
+          }
+        ]
+      },
+      "cooldown": 3600000,
+      "weight": 5,
+      "enabled": true
+    },
+    {
+      "id": "evening_sleepy",
+      "name": "Evening Sleepy",
+      "nameJa": "夜の眠気",
+      "description": "Gets sleepy in the evening",
+      "descriptionJa": "夜になると眠くなる",
+      "triggers": [
+        {
+          "type": "time",
+          "value": "21:00-23:59"
+        },
+        {
+          "type": "random"
+        }
+      ],
+      "reaction": {
+        "text": "眠くなってきた... もう寝る時間かな？",
+        "textJa": "眠くなってきた... もう寝る時間かな？",
+        "textDuration": 3000,
+        "state": "sleepy",
+        "stateDuration": 10000,
+        "media": {
+          "folder": "sleepy"
+        },
+        "attributes": [
+          {
+            "name": "energy",
+            "operation": "subtract",
+            "value": 5
+          }
+        ]
+      },
+      "weight": 3,
+      "enabled": true
+    },
+    {
+      "id": "high_energy_play",
+      "name": "High Energy Play",
+      "nameJa": "元気いっぱい遊び",
+      "description": "Playful when energy is high",
+      "descriptionJa": "エネルギーが高い時の遊び",
+      "triggers": [
+        {
+          "type": "click"
+        }
+      ],
+      "reaction": {
+        "text": "元気いっぱい！一緒に遊ぼう！",
+        "textDuration": 3000,
+        "state": "playing",
+        "stateDuration": 8000,
+        "media": {
+          "conditional": [
+            {
+              "condition": {
+                "type": "attribute",
+                "value": "energy >= 80"
+              },
+              "media": "playing_energetic"
+            }
+          ],
+          "fallback": "playing"
+        },
+        "animation": {
+          "type": "bounce",
+          "duration": 2000,
+          "repeat": 2
+        }
+      },
+      "weight": 2,
+      "enabled": true
+    },
+    {
+      "id": "rain_reaction",
+      "name": "Rain Day Reaction",
+      "nameJa": "雨の日の反応",
+      "description": "Special reaction on rainy days",
+      "descriptionJa": "雨の日の特別な反応",
+      "triggers": [
+        {
+          "type": "custom",
+          "value": "weather === 'rain'"
+        },
+        {
+          "type": "hover"
+        }
+      ],
+      "reaction": {
+        "text": "雨の音が聞こえる... 静かで落ち着くね",
+        "textDuration": 4000,
+        "textStyle": {
+          "color": "#4a90e2",
+          "fontStyle": "italic"
+        },
+        "state": "relaxed",
+        "stateDuration": 15000,
+        "media": {
+          "file": "rain_contemplation.gif"
+        },
+        "attributes": [
+          {
+            "name": "mood",
+            "operation": "set",
+            "value": "contemplative",
+            "duration": 60000
+          }
+        ]
+      },
+      "weight": 4,
+      "enabled": true
+    },
+    {
+      "id": "study_encouragement",
+      "name": "Study Encouragement",
+      "nameJa": "勉強の励まし",
+      "description": "Encourages studying when inactive",
+      "descriptionJa": "非活動時の勉強の励まし",
+      "triggers": [
+        {
+          "type": "time",
+          "value": "idle_timeout_300000"
+        }
+      ],
+      "reaction": {
+        "text": "少し休憩した？また一緒に日本語を勉強しよう！",
+        "textDuration": 5000,
+        "textStyle": {
+          "color": "#4caf50",
+          "fontWeight": "bold"
+        },
+        "media": {
+          "folder": "encouraging"
+        },
+        "chain": ["show_study_tip"]
+      },
+      "cooldown": 600000,
+      "weight": 3,
+      "enabled": true
+    },
+    {
+      "id": "show_study_tip",
+      "name": "Show Study Tip",
+      "nameJa": "勉強のコツを教える",
+      "description": "Shows a random study tip",
+      "descriptionJa": "ランダムな勉強のコツを表示",
+      "triggers": [],
+      "reaction": {
+        "text": "コツ: 毎日少しずつでも続けることが大切！",
+        "textDuration": 4000,
+        "textStyle": {
+          "background": "rgba(255, 235, 59, 0.8)",
+          "color": "#333"
+        }
+      },
+      "enabled": true
+    },
+    {
+      "id": "keyboard_shortcut_i",
+      "name": "Inventory Shortcut Reaction",
+      "nameJa": "道具箱ショートカット反応",
+      "description": "Reacts when user presses I key",
+      "descriptionJa": "Iキーを押した時の反応",
+      "triggers": [
+        {
+          "type": "keyboard",
+          "value": "KeyI"
+        }
+      ],
+      "reaction": {
+        "text": "道具箱を開くよ！何か使ってみる？",
+        "textDuration": 2500,
+        "media": {
+          "folder": "excited"
+        }
+      },
+      "cooldown": 5000,
+      "weight": 1,
+      "enabled": true
+    },
+    {
+      "id": "congratulations_combo",
+      "name": "Congratulations Combo",
+      "nameJa": "連続正解のお祝い",
+      "description": "Special celebration for consecutive correct answers",
+      "descriptionJa": "連続正解の特別なお祝い",
+      "triggers": [
+        {
+          "type": "custom",
+          "value": "consecutive_correct >= 5"
+        }
+      ],
+      "reaction": {
+        "text": "すごい！連続正解！君は日本語の天才だ！",
+        "textDuration": 4000,
+        "textStyle": {
+          "color": "#ff6b35",
+          "fontWeight": "bold",
+          "animation": "shake"
+        },
+        "state": "euphoric",
+        "stateDuration": 10000,
+        "media": {
+          "file": "celebration_special.gif"
+        },
+        "sound": "fanfare.wav",
+        "animation": {
+          "type": "scale",
+          "duration": 3000,
+          "intensity": 1.2,
+          "repeat": 2
+        },
+        "attributes": [
+          {
+            "name": "happiness",
+            "operation": "add",
+            "value": 25,
+            "duration": 120000
+          }
+        ]
+      },
+      "cooldown": 1800000,
+      "weight": 10,
+      "enabled": true
+    }
+  ]
+}

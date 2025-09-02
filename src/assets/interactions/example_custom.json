@@ -1,0 +1,91 @@
+{
+  "version": "1.0.0",
+  "name": "Custom Pet Interactions",
+  "description": "Example custom interaction configuration",
+  "author": "User",
+  "settings": {
+    "enabled": true,
+    "debugMode": true,
+    "maxConcurrentInteractions": 2
+  },
+  "attributes": [
+    {
+      "name": "friendship",
+      "displayName": "Friendship",
+      "displayNameJa": "友情度",
+      "type": "number",
+      "defaultValue": 0,
+      "min": 0,
+      "max": 100,
+      "description": "How much the pet likes you"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "special_click",
+      "name": "Special Click Response",
+      "nameJa": "特別なクリック反応",
+      "description": "A special response to clicking",
+      "descriptionJa": "クリックに対する特別な反応",
+      "triggers": [
+        {
+          "type": "click"
+        }
+      ],
+      "reaction": {
+        "text": "こんにちは！私をクリックしてくれてありがとう！",
+        "textDuration": 3000,
+        "textStyle": {
+          "color": "#e91e63",
+          "fontWeight": "bold"
+        },
+        "media": {
+          "file": "my_custom_reaction.gif"
+        },
+        "attributes": [
+          {
+            "name": "friendship",
+            "operation": "add",
+            "value": 1
+          }
+        ]
+      },
+      "weight": 5,
+      "enabled": true
+    },
+    {
+      "id": "midnight_mystery",
+      "name": "Midnight Mystery",
+      "nameJa": "真夜中の謎",
+      "description": "Something mysterious happens at midnight",
+      "descriptionJa": "真夜中に謎めいたことが起こる",
+      "triggers": [
+        {
+          "type": "time",
+          "value": "00:00-00:01"
+        }
+      ],
+      "reaction": {
+        "text": "真夜中だ... 何か特別なことが起こりそう...",
+        "textDuration": 5000,
+        "textStyle": {
+          "color": "#673ab7",
+          "fontStyle": "italic",
+          "animation": "fade"
+        },
+        "state": "mysterious",
+        "stateDuration": 30000,
+        "media": {
+          "folder": "midnight_special"
+        },
+        "animation": {
+          "type": "fade",
+          "duration": 2000
+        }
+      },
+      "cooldown": 86400000,
+      "weight": 1,
+      "enabled": true
+    }
+  ]
+}
