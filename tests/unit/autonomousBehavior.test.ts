@@ -129,13 +129,36 @@ describe('AutonomousBehaviorManager', () => {
   });
 
   it('should complete behaviors after their duration', () => {
+    // Stop automatic behavior scheduling to test completion in isolation
+    behaviorManager.onUserInteraction(); // This should pause automatic behaviors
+    
+    // Wait a moment for the user interaction to take effect
+    jest.advanceTimersByTime(100);
+    
+    // Clear any previous calls
+    mockEventListener.mockClear();
+    
+    // Set a specific behavior
     behaviorManager.setState('yawning');
     
-    // Fast forward past yawning duration
-    jest.advanceTimersByTime(1500);
-    
-    // Should return to idle after duration
+    // Should emit stateChange event first
     expect(mockEventListener).toHaveBeenCalledWith({
+      type: 'stateChange',
+      state: 'yawning'
+    });
+    
+    // Clear calls to check for completion event
+    mockEventListener.mockClear();
+    
+    // Fast forward past yawning duration (2000ms for yawning)
+    jest.advanceTimersByTime(2100);
+    
+    // Should have emitted completed event at some point (check all calls)
+    const completedCall = mockEventListener.mock.calls.find(call => 
+      call[0].type === 'completed' && call[0].state === 'yawning'
+    );
+    expect(completedCall).toBeDefined();
+    expect(completedCall[0]).toEqual({
       type: 'completed',
       state: 'yawning'
     });
