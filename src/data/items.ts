@@ -47,7 +47,7 @@ export const defaultItems: ItemData[] = [
     effects: [
       { type: 'happiness_increase', value: 50, duration: 10000 },
       { type: 'mood_boost', value: 40, duration: 15000 },
-      { type: 'text_display', value: 'やったー！', duration: 3000 },
+      { type: 'text_display', value: 'やったー！', duration: 5000 },
       { type: 'animation_trigger', value: 'party' }
     ]
   },

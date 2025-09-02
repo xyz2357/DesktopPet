@@ -52,6 +52,10 @@
         },
         {
           "type": "click"
+        },
+        {
+          "type": "custom",
+          "value": "lastUsedItem === null"
         }
       ],
       "reaction": {
@@ -137,6 +141,10 @@
       "triggers": [
         {
           "type": "click"
+        },
+        {
+          "type": "custom",
+          "value": "energy >= 70 && lastUsedItem === null"
         }
       ],
       "reaction": {

@@ -210,6 +210,7 @@ export class CustomInteractionManager {
       expr = expr.replace(/\bcurrentState\b/g, `'${context.currentState}'`);
       expr = expr.replace(/\bhour\b/g, String(context.time.hour));
       expr = expr.replace(/\bminute\b/g, String(context.time.minute));
+      expr = expr.replace(/\blastUsedItem\b/g, context.lastUsedItem ? `'${context.lastUsedItem}'` : 'null');
       
       // 安全的评估（仅支持基本运算符）
       if (!/^[0-9\s+\-*/<>=!&|()'"a-zA-Z_]+$/.test(expr)) {

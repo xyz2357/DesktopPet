@@ -568,18 +568,4 @@
   }
 }
 
-/* 更新气泡显示以包含道具状态 */
-.pet--eating .pet__bubble,
-.pet--drinking .pet__bubble,
-.pet--playing .pet__bubble,
-.pet--playful .pet__bubble,
-.pet--hunting .pet__bubble,
-.pet--relaxed .pet__bubble,
-.pet--examining .pet__bubble,
-.pet--admiring .pet__bubble,
-.pet--royal .pet__bubble,
-.pet--magical .pet__bubble,
-.pet--euphoric .pet__bubble,
-.pet--dragover .pet__bubble {
-  opacity: 1;
-}
+/* 气泡显示逻辑现在由React组件控制，不再依赖CSS类 */

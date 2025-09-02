@@ -75,6 +75,11 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   
   // 道具系统状态
   const [itemReaction, setItemReaction] = useState<PetReaction | null>(null);
+  
+  // 调试：追踪itemReaction的变化
+  useEffect(() => {
+    console.log('🔍 [DEBUG] itemReaction 状态变化:', itemReaction?.message || '(null)');
+  }, [itemReaction]);
   const [currentItemState, setCurrentItemState] = useState<PetState | null>(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const itemReactionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -101,9 +106,45 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   };
 
   // 判断是否为道具相关状态
-  const isItemState = (state: PetState): boolean => {
-    return ['eating', 'drinking', 'playing', 'playful', 'hunting', 'relaxed', 'examining', 'admiring', 'royal', 'magical', 'euphoric'].includes(state);
+  const isItemRelatedState = (state: PetState): boolean => {
+    return ['eating', 'drinking', 'playing', 'playful', 'hunting', 'relaxed', 
+            'examining', 'admiring', 'royal', 'magical', 'euphoric'].includes(state);
   };
+
+  // 判断气泡是否应该显示
+  const shouldShowBubble = (): boolean => {
+    // 优先级：道具反应 > 拖拽悬停 > 其他消息状态 > 常规交互状态
+    if (itemReaction?.message) return true;
+    if (isDraggedOver) return true;
+    if (customInteractionMessage) return true;
+    if (specialMessage) return true;
+    if (timeBasedEmotion) return true;
+    if (isCongrats || isLoading || isActive || isDragging) return true;
+    if (isFollowingMouse) return true;
+    if (isHovered && !isAutonomousState(autonomousState)) return true;
+    
+    // 自主行为状态和道具相关状态也显示气泡
+    const currentState = getPetState();
+    if (isAutonomousState(currentState) || isItemRelatedState(currentState)) return true;
+    
+    return false;
+  };
+
+  // 获取气泡的内联样式
+  const getBubbleStyle = (): React.CSSProperties => {
+    return {
+      opacity: shouldShowBubble() ? 1 : 0,
+      transition: 'opacity 0.3s ease'
+    };
+  };
+
+  // 最近使用的道具跟踪
+  const [lastUsedItem, setLastUsedItem] = useState<string | undefined>(undefined);
+  const lastUsedItemTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // 道具使用期间禁用自定义互动
+  const [customInteractionsBlocked, setCustomInteractionsBlocked] = useState(false);
+  const customInteractionsBlockTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // 构建互动上下文
   const buildInteractionContext = (): InteractionContext => {
@@ -123,7 +164,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
       timestamp: now.getTime(),
       lastInteraction: lastUserInteractionRef.current,
       attributes: customInteractionManager.getAllAttributes(),
-      lastUsedItem: undefined // 会在道具系统中设置
+      lastUsedItem: lastUsedItem
     };
   };
 
@@ -242,8 +283,15 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         if (result.success && result.reaction) {
           const reaction = result.reaction;
           
+          // 如果自定义互动被阻止，则不处理
+          if (customInteractionsBlocked) {
+            console.log('🚫 自定义互动被阻止，因为正在使用道具');
+            return;
+          }
+          
           // 设置文本消息
           if (reaction.text) {
+            console.log('🎭 自定义互动触发, text:', reaction.text, 'itemReaction存在:', !!itemReaction?.message);
             setCustomInteractionMessage(reaction.text);
             
             if (customMessageTimeoutRef.current) {
@@ -251,6 +299,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
             }
             
             customMessageTimeoutRef.current = setTimeout(() => {
+              console.log('🎭 清除CustomInteractionMessage');
               setCustomInteractionMessage('');
             }, reaction.textDuration || 3000);
           }
@@ -384,13 +433,9 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
     // 道具反应监听器
     const handleItemReaction = (reaction: PetReaction) => {
       console.log('🎁 收到道具反应:', reaction);
+      console.log('🎁 设置ItemReaction, 当前CustomInteractionMessage:', customInteractionMessage);
       
       setItemReaction(reaction);
-      
-      // 清除之前的道具反应超时
-      if (itemReactionTimeoutRef.current) {
-        clearTimeout(itemReactionTimeoutRef.current);
-      }
       
       // 处理状态变化
       if (reaction.animation) {
@@ -407,12 +452,6 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
           setCurrentItemState(null);
         }, duration);
       }
-      
-      // 设置反应显示时间
-      const reactionDuration = reaction.duration || 3000;
-      itemReactionTimeoutRef.current = setTimeout(() => {
-        setItemReaction(null);
-      }, reactionDuration);
     };
 
     // 拖拽放置监听器
@@ -421,9 +460,34 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         console.log('🎁 道具放置到桌宠:', item.name);
         handleUserInteraction();
         
+        // 设置最近使用的道具，用于自定义互动条件判断
+        setLastUsedItem(item.id);
+        
+        // 阻止自定义互动在道具使用期间触发
+        setCustomInteractionsBlocked(true);
+        
+        // 清除之前的超时
+        if (lastUsedItemTimeoutRef.current) {
+          clearTimeout(lastUsedItemTimeoutRef.current);
+        }
+        if (customInteractionsBlockTimeoutRef.current) {
+          clearTimeout(customInteractionsBlockTimeoutRef.current);
+        }
+        
+        // 10秒后清除最近使用的道具记录
+        lastUsedItemTimeoutRef.current = setTimeout(() => {
+          setLastUsedItem(undefined);
+        }, 10000);
+        
+        // 8秒后解除自定义互动阻止（比道具消息略长一点）
+        customInteractionsBlockTimeoutRef.current = setTimeout(() => {
+          setCustomInteractionsBlocked(false);
+        }, 8000);
+        
         // 使用道具
         const reaction = await itemManager.useItem(item.id, position);
         if (reaction) {
+          console.log('🎁 道具反应:', item.id, 'message:', reaction.message, 'duration:', reaction.duration);
           handleItemReaction(reaction);
         }
       }
@@ -441,6 +505,12 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
       if (itemStateTimeoutRef.current) {
         clearTimeout(itemStateTimeoutRef.current);
       }
+      if (lastUsedItemTimeoutRef.current) {
+        clearTimeout(lastUsedItemTimeoutRef.current);
+      }
+      if (customInteractionsBlockTimeoutRef.current) {
+        clearTimeout(customInteractionsBlockTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -454,6 +524,43 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
       };
     }
   }, [position, mediaDimensions]);
+
+  // 管理道具反应显示超时
+  useEffect(() => {
+    if (itemReaction) {
+      const reactionDuration = itemReaction.duration || 3000;
+      const startTime = Date.now();
+      const problemItems = ['cake', 'magic_wand', 'rainbow'];
+      const isProbleItem = problemItems.some(item => itemReaction.message?.includes('やったー') || itemReaction.message?.includes('アブラカダブラ') || itemReaction.message?.includes('最高の気分'));
+      
+      console.log(`🎁 [useEffect] ItemReaction 设置超时 ${reactionDuration}ms，消息: "${itemReaction.message}"${isProbleItem ? ' ⚠️ [问题道具]' : ''}，开始时间:`, startTime);
+      
+      // 清除之前的超时
+      if (itemReactionTimeoutRef.current) {
+        clearTimeout(itemReactionTimeoutRef.current);
+        console.log('🎁 [useEffect] 清除了之前的超时');
+      }
+      
+      // 设置新的超时
+      itemReactionTimeoutRef.current = setTimeout(() => {
+        const endTime = Date.now();
+        const actualDuration = endTime - startTime;
+        console.log(`🎁 [useEffect] 清除ItemReaction，预期: ${reactionDuration}ms，实际: ${actualDuration}ms${isProbleItem ? ' ⚠️ [问题道具]' : ''}`);
+        setItemReaction(null);
+      }, reactionDuration);
+      
+      // 清理函数
+      return () => {
+        if (itemReactionTimeoutRef.current) {
+          const cleanupTime = Date.now();
+          const cleanupDuration = cleanupTime - startTime;
+          console.log(`🎁 [useEffect] 清理函数调用，已经过去: ${cleanupDuration}ms${isProbleItem ? ' ⚠️ [问题道具]' : ''}`);
+          clearTimeout(itemReactionTimeoutRef.current);
+          itemReactionTimeoutRef.current = null;
+        }
+      };
+    }
+  }, [itemReaction]);
 
   // 更新桌宠放置区域位置
   useEffect(() => {
@@ -897,7 +1004,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
             </>
           )}
         </div>
-        <div className="pet__bubble">
+        <div className="pet__bubble" style={getBubbleStyle()}>
           {/* 优先级：道具反应 > 自定义互动消息 > 特殊消息 > 时间感知情绪 > 常规状态 */}
           {itemReaction?.message && <span style={{color: '#ff9800', fontWeight: 'bold'}}>{itemReaction.message}</span>}
           {!itemReaction?.message && customInteractionMessage && <span style={{color: '#e91e63', fontWeight: 'bold'}}>{customInteractionMessage}</span>}

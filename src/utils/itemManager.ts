@@ -91,22 +91,29 @@ export class ItemManager {
   private processItemEffects(item: ItemData, targetPosition?: { x: number; y: number }): PetReaction {
     const reaction: PetReaction = {};
     const now = Date.now();
+    let textDisplayDuration: number | undefined;
 
     for (const effect of item.effects) {
       switch (effect.type) {
         case 'text_display':
           reaction.message = effect.value as string;
-          reaction.duration = effect.duration || 3000;
+          textDisplayDuration = effect.duration || 3000;
           break;
 
         case 'state_change':
           reaction.animation = effect.value as string;
-          reaction.duration = effect.duration || 5000;
+          // 只有在没有文字显示时才设置duration，否则保持文字显示的duration
+          if (!textDisplayDuration) {
+            reaction.duration = effect.duration || 5000;
+          }
           break;
 
         case 'animation_trigger':
           reaction.animation = effect.value as string;
-          reaction.duration = effect.duration || 3000;
+          // 只有在没有文字显示时才设置duration，否则保持文字显示的duration
+          if (!textDisplayDuration) {
+            reaction.duration = effect.duration || 3000;
+          }
           break;
 
         case 'sound_play':
@@ -136,6 +143,11 @@ export class ItemManager {
           }
           break;
       }
+    }
+
+    // 如果有文字显示，使用文字显示的duration
+    if (textDisplayDuration) {
+      reaction.duration = textDisplayDuration;
     }
 
     return reaction;
