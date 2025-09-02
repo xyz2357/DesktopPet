@@ -1,6 +1,18 @@
-# Testing Guide
+# Testing Guide / 测试指南
+
+[English](#english) | [中文](#中文)
+
+---
+
+## English
 
 This document describes the testing setup and available test commands for the Japanese Pet desktop application.
+
+---
+
+## 中文
+
+本文档描述日本宠物桌面应用程序的测试设置和可用的测试命令。
 
 ## Test Architecture
 
@@ -171,3 +183,179 @@ npm run test:watch
 2. **Visual Regression**: Screenshot-based testing for UI consistency
 3. **Performance Testing**: Memory leak and performance benchmarks
 4. **Integration**: CI/CD pipeline integration for automated testing
+
+---
+
+## 中文
+
+本文档描述日本宠物桌面应用程序的测试设置和可用的测试命令。
+
+## 测试架构
+
+项目包含全面的测试覆盖：
+
+- **单元测试**: 测试单个组件和业务逻辑
+- **集成测试**: 测试组件交互
+- **API测试**: 测试Electron IPC通信
+- **E2E测试**: 端到端测试设置（基于Playwright）
+
+## 可用测试命令
+
+```bash
+# 运行所有单元测试
+npm test
+
+# 监听模式运行测试（文件变化时重新运行）
+npm run test:watch
+
+# 运行测试并生成覆盖率报告
+npm run test:coverage
+
+# 运行所有测试（单元测试 + 覆盖率）
+npm run test:all
+
+# 运行e2e测试（需要构建的应用程序）
+npm run test:e2e
+
+# 运行带UI的e2e测试
+npm run test:e2e:ui
+```
+
+## 测试结构
+
+```
+tests/
+├── e2e/                    # 端到端测试
+│   └── app.spec.ts
+├── unit/                   # 独立单元测试（如需要）
+└── README.md              # 测试文档
+
+src/
+├── __tests__/             # App组件测试
+│   └── App.test.tsx
+├── components/__tests__/   # 组件单元测试
+│   ├── Pet.test.tsx
+│   ├── StudyCard.test.tsx
+│   └── ContextMenu.test.tsx
+├── data/__tests__/        # 业务逻辑测试
+│   └── cards.test.ts
+├── api/__tests__/         # API测试
+│   └── electronAPI.test.ts
+└── setupTests.ts          # 测试环境设置
+```
+
+## 当前测试覆盖率
+
+测试套件包含60+个测试用例，覆盖：
+
+### 组件测试 (Pet.test.tsx)
+- 桌宠emoji状态（空闲、加载、活跃）
+- 悬停行为和状态变化
+- 点击与拖拽区分
+- 上下文菜单功能
+- 拖拽机制
+- 鼠标事件处理
+
+### 组件测试 (StudyCard.test.tsx)
+- 不同卡片类型的渲染
+- 翻译切换功能
+- 答案按钮交互
+- 键盘快捷键（Escape键）
+- 遮罩点击处理
+- TTS按钮交互
+
+### 组件测试 (ContextMenu.test.tsx)
+- 菜单可见性和定位
+- 事件监听器设置和清理
+- 外部点击处理
+- 菜单项交互
+
+### 业务逻辑测试 (cards.test.ts)
+- CardManager初始化和洗牌
+- 卡片检索逻辑
+- 复习池管理
+- SRS算法行为
+- 答案提交处理
+- 基于概率的复习调度
+
+### API测试 (electronAPI.test.ts)
+- Electron IPC通信
+- Mock API交互
+- 错误处理
+- 参数验证
+
+## 测试配置
+
+### Jest配置 (jest.config.js)
+- 使用ts-jest的TypeScript支持
+- React测试的JSDOM环境
+- 使用identity-obj-proxy的CSS模块模拟
+- 测试文件模式和排除
+- 覆盖率收集设置
+
+### 使用的测试库
+- **Jest**: 测试运行器和断言库
+- **React Testing Library**: React组件测试工具
+- **@testing-library/user-event**: 用户交互模拟
+- **@testing-library/jest-dom**: 自定义Jest匹配器
+- **Playwright**: E2E测试框架
+
+## 运行测试
+
+### 前提条件
+```bash
+# 安装依赖
+npm install
+```
+
+### 基础测试
+```bash
+# 运行所有单元测试
+npm test
+
+# 预期输出：所有测试通过，60+个测试用例
+```
+
+### 覆盖率分析
+```bash
+# 生成覆盖率报告
+npm run test:coverage
+
+# 覆盖率包括：
+# - 组件：~85%覆盖率
+# - 业务逻辑：~94%覆盖率
+# - 总体：~62%（排除main/renderer入口点）
+```
+
+### 监听模式开发
+```bash
+# 启动监听模式进行测试驱动开发
+npm run test:watch
+```
+
+## 测试最佳实践
+
+1. **组件测试**: 测试专注于用户交互和组件行为
+2. **业务逻辑**: SRS学习算法的全面测试
+3. **Mock管理**: 每个测试中清洁的mock设置和清理
+4. **事件测试**: 键盘和鼠标事件的适当测试
+5. **状态管理**: 组件状态变化和副作用的测试
+
+## 测试调试
+
+### 常见问题
+- **CSS导入错误**: 通过Jest配置中的identity-obj-proxy解决
+- **Electron API模拟**: 在setupTests.ts中处理
+- **异步操作**: 正确使用waitFor和async/await模式
+
+### 测试调试
+- 使用`screen.debug()`检查渲染的组件
+- 在测试代码中添加console.log语句进行调试
+- 使用`test.only()`单独运行特定测试
+
+## 未来测试增强
+
+1. **E2E测试**: 完整的Electron特定e2e测试设置
+2. **视觉回归**: 基于截图的UI一致性测试
+3. **性能测试**: 内存泄漏和性能基准测试
+4. **集成**: 自动化测试的CI/CD管道集成

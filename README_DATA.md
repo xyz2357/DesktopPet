@@ -1,4 +1,106 @@
-# 日语桌宠数据结构文档
+# Japanese Pet Data Structure Documentation / 日语桌宠数据结构文档
+
+[English](#english) | [中文](#中文)
+
+---
+
+## English
+
+### Data Organization
+
+The new data structure separates card types into different JSON files for better management and extensibility:
+
+```
+src/data/cards/
+├── words.json      # Word card data
+├── sentences.json  # Sentence card data  
+├── examples.json   # Example card data
+├── grammar.json    # Grammar card data
+├── images.json     # Image card data
+├── audio.json      # Audio card data
+├── arrange.json    # Drag-arrange sentence card data
+└── index.ts        # Data loading and management module
+```
+
+### Card Types and Field Descriptions
+
+#### 1. Word Cards (words.json)
+```json
+{
+  "id": "w001",
+  "type": "word",
+  "jp": "勉強",
+  "kana": "べんきょう", 
+  "romaji": "benkyou",
+  "cn": "study",
+  "example_jp": "日本語を勉強します。",
+  "example_cn": "I study Japanese.",
+  "jlpt": "N5",
+  "difficulty": 1,
+  "category": "education",
+  "tags": ["verb", "daily-life"]
+}
+```
+
+#### 2. Sentence Cards (sentences.json)
+```json
+{
+  "id": "s001",
+  "type": "sentence",
+  "jp": "おはようございます",
+  "kana": "おはようございます",
+  "romaji": "ohayou gozaimasu", 
+  "cn": "Good morning",
+  "jlpt": "N5",
+  "difficulty": 1,
+  "category": "greeting",
+  "tags": ["polite", "morning"],
+  "usage_context": "formal_greeting"
+}
+```
+
+#### 3. Example Cards (examples.json)
+```json
+{
+  "id": "e001",
+  "type": "example",
+  "jp": "部屋が明るいです。",
+  "kana": "へやがあかるいです。",
+  "romaji": "heya ga akarui desu.",
+  "cn": "The room is bright.",
+  "jlpt": "N5", 
+  "difficulty": 1,
+  "category": "description",
+  "tags": ["adjective", "room"],
+  "grammar_focus": "い-adjective + です",
+  "vocabulary_focus": ["部屋", "明るい"]
+}
+```
+
+#### 4. Grammar Cards (grammar.json)
+```json
+{
+  "id": "g001",
+  "type": "grammar",
+  "jp": "〜ている",
+  "cn": "continuous state",
+  "grammar_pattern": "V-ている",
+  "grammar_explanation": "Expresses ongoing action or continuous state. Used to describe things happening now or ongoing conditions.",
+  "example_jp": "今、勉強しています。",
+  "example_cn": "I am studying now.",
+  "jlpt": "N5",
+  "difficulty": 2,
+  "category": "verb-form",
+  "tags": ["continuous", "present"],
+  "usage_notes": "verb te-form + いる",
+  "formation_rule": "verb te-form + います (polite form)",
+  "related_grammar": ["〜ていた", "〜てある"]
+}
+```
+
+---
+
+## 中文
 
 ## 数据组织方式
 

@@ -1,4 +1,83 @@
-# 自定义互动系统 Custom Interaction System
+# Custom Interaction System / 自定义互动系统
+
+[English](#english) | [中文](#中文)
+
+---
+
+## English
+
+Japanese Pet comes with a powerful custom interaction system that allows users to create their own interaction logic, set trigger conditions, and define pet reaction behaviors.
+
+### Quick Start
+
+#### 1. Configuration File Location
+Place your custom configuration files at:
+```
+src/assets/interactions/
+├── default.json        # Default interaction config (system provided)
+├── example_custom.json # Example custom config (for reference)
+├── custom.json         # User custom config (loaded first)
+├── user.json           # Alternative user config file name
+└── my_interactions.json # Another alternative user config file name
+```
+
+The system will try to load user config files in order: `custom.json` > `user.json` > `my_interactions.json`
+
+#### 2. Basic Configuration Structure
+
+Create a JSON configuration file:
+
+```json
+{
+  "version": "1.0.0",
+  "name": "My Custom Interactions",
+  "description": "Personal desktop pet interaction configuration",
+  "author": "Your Name",
+  "settings": {
+    "enabled": true,
+    "debugMode": false,
+    "maxConcurrentInteractions": 2
+  },
+  "attributes": [
+    {
+      "name": "friendship",
+      "displayName": "Friendship",
+      "type": "number",
+      "defaultValue": 0,
+      "min": 0,
+      "max": 100,
+      "description": "Pet's affection toward user"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "my_custom_click",
+      "name": "Special Click Response",
+      "description": "Special response when clicked",
+      "triggers": [
+        {"type": "click"}
+      ],
+      "reaction": {
+        "text": "Hello! Thanks for clicking!",
+        "textDuration": 3000,
+        "attributes": [
+          {
+            "name": "friendship",
+            "operation": "add",
+            "value": 1
+          }
+        ]
+      },
+      "weight": 5,
+      "enabled": true
+    }
+  ]
+}
+```
+
+---
+
+## 中文
 
 Japanese Pet 应用内置了强大的自定义互动系统，允许用户创建自己的互动逻辑、设置触发条件、并定义桌宠的反应行为。
 

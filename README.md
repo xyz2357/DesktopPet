@@ -1,4 +1,153 @@
-# 日语学习桌宠 MVP
+# Japanese Pet MVP / 日语学习桌宠 MVP
+
+[English](#english) | [中文](#中文)
+
+---
+
+## English
+
+A desktop Japanese learning application built with Electron + React + TypeScript. Features an adorable desktop pet that accompanies users in fragmented Japanese language learning.
+
+### ✅ Implemented Features
+
+- **Desktop Pet Window**: Always-on-top draggable semi-transparent window
+- **Smart Learning Cards**: Display Japanese vocabulary and phrases with:
+  - Japanese text
+  - Kana annotations  
+  - Romaji
+  - Chinese meanings
+  - Example sentences (optional)
+- **Three-button Interaction**:
+  - ✅ Know it: Reduce repetition frequency, occasional review
+  - 😵 Don't know: Add to review pool, increase repetition
+  - ⏰ Later: Reappear after 5 minutes delay
+- **Hard-coded Vocabulary**: Built-in N5 level common words and phrases
+- **Simplified SRS**: Spaced Repetition System based on answer results
+- **Timed Push**: Automatically pop up new learning cards every 60 seconds
+
+### 🚧 Features to Implement
+
+- **TTS Voice Playback**: Click play button to hear Japanese pronunciation
+- **Tray Menu**: Right-click menu with show/hide, settings, exit
+- **Daily Close**: One-click to pause all notifications for the day
+- **User Settings**: Adjust push frequency, silent mode, etc.
+
+### Technical Stack
+
+#### Frontend
+- **Electron**: Cross-platform desktop application framework
+- **React 19**: UI component library
+- **TypeScript**: Type-safe JavaScript
+- **Webpack**: Module bundler
+
+#### Data Management
+- **Local Data**: Hard-coded vocabulary data for quick MVP validation
+- **Simplified SRS**: Learning progress management based on answer results
+- **IPC Communication**: Data exchange between main and renderer processes
+
+### Project Structure
+
+```
+japanese-pet/
+├── src/
+│   ├── components/          # React components
+│   │   ├── Pet.tsx         # Pet main component
+│   │   ├── StudyCard.tsx   # Study card component
+│   │   └── *.css          # Component styles
+│   ├── data/
+│   │   └── cards.ts       # Vocabulary data and management logic
+│   ├── types/
+│   │   └── card.ts        # TypeScript type definitions
+│   ├── App.tsx            # Main application component
+│   ├── main.ts            # Electron main process
+│   ├── preload.ts         # Preload script
+│   └── renderer.tsx       # Renderer process entry
+├── dist/                   # Build output directory
+├── public/                 # Static assets
+└── webpack.config.js       # Webpack configuration
+```
+
+### Quick Start
+
+#### Install Dependencies
+```bash
+npm install
+```
+
+#### Development Run
+```bash
+npm start
+```
+
+#### Build Application
+```bash
+npm run build
+```
+
+#### Package Release
+```bash
+npm run package
+```
+
+### Usage Instructions
+
+1. **Start Application**: Run `npm start` and a small pet will appear in the desktop corner
+2. **Active Learning**: Click the pet to manually get new learning cards
+3. **Auto Push**: Application automatically pops up new learning content every 60 seconds
+4. **Learning Feedback**: Choose "Know it", "Don't know", or "Later" based on mastery
+5. **Drag Movement**: Pet can be freely dragged to any position on desktop
+
+### Data Description
+
+Current MVP contains 10 learning items:
+
+**Vocabulary (7 items)**
+- 勉強 (benkyou) - study
+- 友達 (tomodachi) - friend
+- 仕事 (shigoto) - work  
+- 美味しい (oishii) - delicious
+- 大きい (ookii) - big
+- 先生 (sensei) - teacher
+- 学校 (gakkou) - school
+
+**Phrases (3 items)**
+- おはようございます - Good morning
+- ありがとうございます - Thank you
+- すみません - Sorry/Excuse me
+
+### Development Plan
+
+#### Phase 2 Enhanced Features
+- [ ] Web Speech API integration for TTS
+- [ ] Tray menu and system integration
+- [ ] User settings persistence
+- [ ] Learning statistics and progress display
+
+#### Phase 3 Advanced Features
+- [ ] Cloud vocabulary database
+- [ ] Personalized recommendation algorithm
+- [ ] Voice recognition practice
+- [ ] Community features
+
+### Technical Debt
+
+- [ ] Add unit tests
+- [ ] Error boundaries and exception handling
+- [ ] Performance optimization and memory management
+- [ ] Bundle size optimization
+- [ ] Cross-platform compatibility testing
+
+### Contributing
+
+Issues and Pull Requests are welcome!
+
+### License
+
+MIT License
+
+---
+
+## 中文
 
 一个基于 Electron + React + TypeScript 的日语学习桌面应用，通过可爱的桌宠陪伴用户进行碎片化日语学习。
 
