@@ -40,6 +40,12 @@
   font-weight: 500;
 }
 
+.context-menu__separator {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 4px 0;
+}
+
 @keyframes contextMenuFadeIn {
   from {
     opacity: 0;

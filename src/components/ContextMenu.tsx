@@ -8,9 +8,11 @@ interface ContextMenuProps {
   y: number;
   onClose: () => void;
   onQuit: () => void;
+  onToggleDebugPanel: () => void;
+  onToggleItemPanel: () => void;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ visible, x, y, onClose, onQuit }) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({ visible, x, y, onClose, onQuit, onToggleDebugPanel, onToggleItemPanel }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,6 +47,15 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ visible, x, y, onClose, onQui
       className="context-menu"
       style={{ left: x, top: y }}
     >
+      <div className="context-menu__item" onClick={() => { onToggleDebugPanel(); onClose(); }}>
+        <span className="context-menu__icon">🐛</span>
+        <span className="context-menu__text">调试面板</span>
+      </div>
+      <div className="context-menu__item" onClick={() => { onToggleItemPanel(); onClose(); }}>
+        <span className="context-menu__icon">🎁</span>
+        <span className="context-menu__text">道具栏</span>
+      </div>
+      <div className="context-menu__separator"></div>
       <div className="context-menu__item" onClick={onQuit}>
         <span className="context-menu__icon">🚪</span>
         <span className="context-menu__text">{PetTexts.contextMenu.quit}</span>

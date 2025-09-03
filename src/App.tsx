@@ -19,6 +19,9 @@ const App: React.FC = () => {
   
   // 道具面板状态
   const [showItemPanel, setShowItemPanel] = useState(false);
+  
+  // 调试面板状态
+  const [isDebugPanelVisible, setIsDebugPanelVisible] = useState(false);
 
   // 获取新的学习卡片
   const fetchNewCard = async () => {
@@ -99,8 +102,8 @@ const App: React.FC = () => {
   // 管理点击穿透状态
   useEffect(() => {
     const setMouseEvents = async () => {
-      if (showCard || isPetHovered || isContextMenuVisible || showItemPanel) {
-        // 显示学习卡片、鼠标悬停桌宠、显示右键菜单或显示道具面板时禁用点击穿透
+      if (showCard || isPetHovered || isContextMenuVisible || showItemPanel || isDebugPanelVisible) {
+        // 显示学习卡片、鼠标悬停桌宠、显示右键菜单、显示道具面板或调试面板时禁用点击穿透
         console.log('Disabling mouse events for UI elements');
         await window.electronAPI.setIgnoreMouseEvents(false);
       } else {
@@ -111,7 +114,7 @@ const App: React.FC = () => {
     };
     
     setMouseEvents();
-  }, [showCard, isPetHovered, isContextMenuVisible, showItemPanel]);
+  }, [showCard, isPetHovered, isContextMenuVisible, showItemPanel, isDebugPanelVisible]);
 
   // 键盘快捷键处理
   useEffect(() => {
@@ -164,6 +167,8 @@ const App: React.FC = () => {
         isCongrats={isCongrats}
         onHoverChange={setIsPetHovered}
         onContextMenuChange={setIsContextMenuVisible}
+        onItemPanelToggle={() => setShowItemPanel(!showItemPanel)}
+        onDebugPanelChange={setIsDebugPanelVisible}
       />
       {showCard && currentCard && (
         <StudyCard
@@ -178,26 +183,6 @@ const App: React.FC = () => {
         onClose={() => setShowItemPanel(false)}
         onItemDragStart={handleItemDragStart}
       />
-      
-      {/* 道具面板提示 */}
-      {!showItemPanel && !showCard && (
-        <div 
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            background: 'rgba(0, 0, 0, 0.7)',
-            color: 'white',
-            padding: '8px 12px',
-            borderRadius: '20px',
-            fontSize: '12px',
-            pointerEvents: 'none',
-            zIndex: 100
-          }}
-        >
-          按 I 键打开道具箱
-        </div>
-      )}
     </div>
   );
 };
