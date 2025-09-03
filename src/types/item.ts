@@ -39,6 +39,9 @@ export type ItemEffectType =
   | 'mood_boost'        // 心情提升
   | 'energy_restore'    // 能量恢复
   | 'happiness_increase' // 快乐增加
+  | 'hunger_restore'    // 饥饿恢复
+  | 'health_restore'    // 健康恢复
+  | 'cleanliness_boost' // 清洁提升
   | 'state_change'      // 状态改变
   | 'animation_trigger' // 触发动画
   | 'sound_play'        // 播放声音

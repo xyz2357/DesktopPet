@@ -22,6 +22,9 @@ const App: React.FC = () => {
   
   // 调试面板状态
   const [isDebugPanelVisible, setIsDebugPanelVisible] = useState(false);
+  
+  // 状态面板状态
+  const [isStatsPanelVisible, setIsStatsPanelVisible] = useState(false);
 
   // 获取新的学习卡片
   const fetchNewCard = async () => {
@@ -102,8 +105,8 @@ const App: React.FC = () => {
   // 管理点击穿透状态
   useEffect(() => {
     const setMouseEvents = async () => {
-      if (showCard || isPetHovered || isContextMenuVisible || showItemPanel || isDebugPanelVisible) {
-        // 显示学习卡片、鼠标悬停桌宠、显示右键菜单、显示道具面板或调试面板时禁用点击穿透
+      if (showCard || isPetHovered || isContextMenuVisible || showItemPanel || isDebugPanelVisible || isStatsPanelVisible) {
+        // 显示学习卡片、鼠标悬停桌宠、显示右键菜单、显示道具面板、调试面板或状态面板时禁用点击穿透
         console.log('Disabling mouse events for UI elements');
         await window.electronAPI.setIgnoreMouseEvents(false);
       } else {
@@ -114,7 +117,7 @@ const App: React.FC = () => {
     };
     
     setMouseEvents();
-  }, [showCard, isPetHovered, isContextMenuVisible, showItemPanel, isDebugPanelVisible]);
+  }, [showCard, isPetHovered, isContextMenuVisible, showItemPanel, isDebugPanelVisible, isStatsPanelVisible]);
 
   // 键盘快捷键处理
   useEffect(() => {
@@ -169,6 +172,7 @@ const App: React.FC = () => {
         onContextMenuChange={setIsContextMenuVisible}
         onItemPanelToggle={() => setShowItemPanel(!showItemPanel)}
         onDebugPanelChange={setIsDebugPanelVisible}
+        onStatsPanelChange={setIsStatsPanelVisible}
       />
       {showCard && currentCard && (
         <StudyCard

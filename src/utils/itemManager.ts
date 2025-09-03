@@ -1,6 +1,7 @@
 import { ItemData, ItemUsage, ItemInventory, PetReaction, ItemEffect } from '../types/item';
 import { defaultItems } from '../data/items';
 import { PetState } from './mediaManager';
+import { petStatsManager } from './petStatsManager';
 
 export class ItemManager {
   private inventory: ItemInventory;
@@ -123,7 +124,13 @@ export class ItemManager {
         case 'mood_boost':
         case 'happiness_increase':
         case 'energy_restore':
-          // 这些效果可以被外部系统读取和应用
+        case 'hunger_restore':
+        case 'health_restore':
+        case 'cleanliness_boost':
+          // 直接应用到桌宠数值系统
+          this.applyStatEffect(effect, item.name);
+          
+          // 仍然保存为活跃效果，用于其他系统
           if (effect.duration) {
             this.activeEffects.set(`${item.id}_${effect.type}`, {
               effect,
@@ -262,6 +269,39 @@ export class ItemManager {
     });
 
     return availableItems.slice(0, maxItems);
+  }
+
+  // 应用数值效果到桌宠数值系统
+  private applyStatEffect(effect: ItemEffect, itemName: string): void {
+    const value = effect.value as number;
+    
+    switch (effect.type) {
+      case 'happiness_increase':
+        petStatsManager.changeStat('happiness', value, `使用${itemName}`);
+        break;
+      
+      case 'energy_restore':
+        petStatsManager.changeStat('energy', value, `使用${itemName}`);
+        break;
+        
+      case 'hunger_restore':
+        petStatsManager.changeStat('hunger', value, `使用${itemName}`);
+        break;
+        
+      case 'health_restore':
+        petStatsManager.changeStat('health', value, `使用${itemName}`);
+        break;
+        
+      case 'cleanliness_boost':
+        petStatsManager.changeStat('cleanliness', value, `使用${itemName}`);
+        break;
+      
+      case 'mood_boost':
+        // mood_boost 可以同时影响心情和健康
+        petStatsManager.changeStat('happiness', value * 0.7, `使用${itemName}`);
+        petStatsManager.changeStat('health', value * 0.3, `使用${itemName}`);
+        break;
+    }
   }
 
   // 清理过期效果

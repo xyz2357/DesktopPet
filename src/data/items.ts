@@ -14,6 +14,7 @@ export const defaultItems: ItemData[] = [
     image: 'fish', // 图片文件名（不含扩展名）
     effects: [
       { type: 'happiness_increase', value: 20, duration: 5000 },
+      { type: 'hunger_restore', value: 40, duration: 5000 },
       { type: 'text_display', value: 'おいしい！', duration: 3000 },
       { type: 'animation_trigger', value: 'eating' }
     ]
@@ -30,6 +31,7 @@ export const defaultItems: ItemData[] = [
     image: 'milk',
     effects: [
       { type: 'energy_restore', value: 30, duration: 3000 },
+      { type: 'hunger_restore', value: 25, duration: 3000 },
       { type: 'text_display', value: 'ごくごく...', duration: 2000 },
       { type: 'state_change', value: 'drinking', duration: 2000 }
     ]

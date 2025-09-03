@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ContextMenu from './ContextMenu';
 import DebugPanel from './DebugPanel';
+import PetStatsPanel from './PetStatsPanel';
 import { PetConfig } from '../config/appConfig';
 import { PetTexts } from '../config/petTexts';
 import { mediaManager, PetState, MediaFile } from '../utils/mediaManager';
@@ -29,9 +30,10 @@ interface PetProps {
   onContextMenuChange: (isVisible: boolean) => void;
   onItemPanelToggle?: () => void;
   onDebugPanelChange?: (isVisible: boolean) => void;
+  onStatsPanelChange?: (isVisible: boolean) => void;
 }
 
-const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onHoverChange, onContextMenuChange, onItemPanelToggle, onDebugPanelChange }) => {
+const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onHoverChange, onContextMenuChange, onItemPanelToggle, onDebugPanelChange, onStatsPanelChange }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [contextMenu, setContextMenu] = useState<{visible: boolean; x: number; y: number}>({
     visible: false,
@@ -89,8 +91,9 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
   const itemStateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const petElementRef = useRef<HTMLDivElement | null>(null);
 
-  // 调试面板显示状态
+  // 面板显示状态
   const [isDebugPanelVisible, setIsDebugPanelVisible] = useState(false);
+  const [isStatsPanelVisible, setIsStatsPanelVisible] = useState(false);
   
   const getPetState = (): PetState => {
     // 优先级：自定义互动状态 > 道具反应状态 > 用户交互状态 > 自主行为状态
@@ -990,6 +993,12 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
     onItemPanelToggle?.();
   };
 
+  const handleToggleStatsPanel = () => {
+    const newVisibility = !isStatsPanelVisible;
+    setIsStatsPanelVisible(newVisibility);
+    onStatsPanelChange?.(newVisibility);
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.button === 0) { // 左键
       // 如果使用的是媒体文件且点击在透明区域，不处理
@@ -1207,6 +1216,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         onQuit={handleQuit}
         onToggleDebugPanel={handleToggleDebugPanel}
         onToggleItemPanel={handleToggleItemPanel}
+        onToggleStatsPanel={handleToggleStatsPanel}
       />
       
       <DebugPanel
@@ -1232,6 +1242,11 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
         isFollowingMouse={isFollowingMouse}
         eyeDirection={eyeDirection}
         lastUserInteractionTime={lastUserInteractionRef.current}
+      />
+      
+      <PetStatsPanel
+        isVisible={isStatsPanelVisible}
+        onToggle={handleToggleStatsPanel}
       />
     </>
   );

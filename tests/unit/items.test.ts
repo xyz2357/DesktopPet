@@ -104,14 +104,16 @@ describe('Default Items Data', () => {
 
   describe('效果测试 / Effects Tests', () => {
     const validEffectTypes = [
-      'happiness_increase',
-      'energy_restore', 
       'mood_boost',
-      'text_display',
-      'animation_trigger',
+      'energy_restore', 
+      'happiness_increase',
+      'hunger_restore',
+      'health_restore',
+      'cleanliness_boost',
       'state_change',
-      'temp_stat_boost',
-      'cooldown_apply',
+      'animation_trigger',
+      'sound_play',
+      'text_display',
       'behavior_modify',
       'temporary_ability'
     ];
