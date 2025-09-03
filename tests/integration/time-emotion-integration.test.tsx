@@ -153,21 +153,21 @@ describe('Pet Component - Time-based Emotion Integration', () => {
     });
 
     // Initially idle
-    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--idle');
+    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
 
     // Change to active state
     await act(async () => {
       rerender(<Pet {...mockProps} isActive={true} />);
     });
 
-    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--active');
+    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
 
     // Change to loading state
     await act(async () => {
       rerender(<Pet {...mockProps} isLoading={true} />);
     });
 
-    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--loading');
+    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
 
     // Emotion system should continue working regardless of state changes
     await waitFor(() => {

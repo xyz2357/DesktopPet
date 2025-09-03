@@ -1,20 +1,7 @@
 .pet {
   position: absolute;
-  /* 动态尺寸将通过内联样式设置 */
-  cursor: pointer;
-  transition: all 0.3s ease;
   user-select: none;
-  z-index: 1001; /* 确保在拖拽时能接收到事件 */
-}
-
-/* .pet:hover:not(.pet--dragging) {
-  transform: scale(1.1);
-} */
-
-.pet--dragging {
-  cursor: grabbing;
-  transition: none;
-  z-index: 9999;
+  /* 其他样式现在由 getPetContainerStyle() 函数控制 */
 }
 
 .pet__avatar {
@@ -26,10 +13,9 @@
 }
 
 .pet__emoji {
-  /* 字体大小和行高将通过内联样式动态设置 */
   text-align: center;
   user-select: none;
-  transition: transform 0.3s ease;
+  /* 动画和变换现在由 getPetAvatarStyle() 函数控制 */
 }
 
 .pet__image,
@@ -38,8 +24,8 @@
   height: 100%;
   object-fit: contain;
   user-select: none;
-  transition: transform 0.3s ease;
   border-radius: 8px;
+  /* 动画和变换现在由 getPetAvatarStyle() 函数控制 */
 }
 
 .pet__video::-webkit-media-controls {
@@ -49,30 +35,6 @@
 .pet__video::-webkit-media-controls-panel {
   display: none !important;
 }
-
-.pet--loading .pet__emoji,
-.pet--loading .pet__image,
-.pet--loading .pet__video {
-  animation: bounce 1s infinite;
-}
-
-.pet--active .pet__emoji,
-.pet--active .pet__image,
-.pet--active .pet__video {
-  animation: pulse 2s infinite;
-}
-
-.pet--congrats .pet__emoji,
-.pet--congrats .pet__image,
-.pet--congrats .pet__video {
-  animation: celebrate 0.6s ease-in-out;
-}
-
-/* .pet--hover .pet__emoji,
-.pet--hover .pet__image,
-.pet--hover .pet__video {
-  transform: rotate(15deg);
-} */
 
 .pet__bubble {
   position: absolute;
@@ -86,11 +48,10 @@
   border-radius: var(--bubble-border-radius, 16px);
   font-size: var(--bubble-font-size, 12px);
   white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s ease;
   pointer-events: none;
   border: var(--bubble-border, 1px solid rgba(0, 0, 0, 0.1));
   box-shadow: var(--bubble-shadow, 0 4px 12px rgba(0, 0, 0, 0.15));
+  /* 显示/隐藏现在由 getBubbleStyle() 函数控制 */
 }
 
 .pet__bubble::after {
@@ -103,19 +64,8 @@
   border-top-color: rgba(255, 255, 255, 0.9);
 }
 
-.pet--loading .pet__bubble,
-.pet--active .pet__bubble,
-.pet--hover .pet__bubble,
-.pet--congrats .pet__bubble,
-.pet--walking .pet__bubble,
-.pet--sleeping .pet__bubble,
-.pet--observing .pet__bubble,
-.pet--yawning .pet__bubble,
-.pet--stretching .pet__bubble,
-.pet--following-mouse .pet__bubble,
-.pet--dragging .pet__bubble {
-  opacity: 1;
-}
+/* ========== CSS 动画定义 ========== */
+/* 这些 @keyframes 动画仍然在 TypeScript 中使用 */
 
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
@@ -159,15 +109,6 @@
   }
 }
 
-/* 新增的自主行为动画 */
-
-/* 行走动画 - 轻微的左右摇摆 */
-.pet--walking .pet__emoji,
-.pet--walking .pet__image,
-.pet--walking .pet__video {
-  animation: walk 2s infinite ease-in-out;
-}
-
 @keyframes walk {
   0%, 100% {
     transform: translateX(0) rotate(0deg);
@@ -180,14 +121,6 @@
   }
 }
 
-/* 睡觉动画 - 缓慢的上下浮动 */
-.pet--sleeping .pet__emoji,
-.pet--sleeping .pet__image,
-.pet--sleeping .pet__video {
-  animation: sleep 4s infinite ease-in-out;
-  opacity: 0.8;
-}
-
 @keyframes sleep {
   0%, 100% {
     transform: translateY(0) scale(1);
@@ -195,13 +128,6 @@
   50% {
     transform: translateY(-5px) scale(0.98);
   }
-}
-
-/* 观察动画 - 轻微的视线移动效果 */
-.pet--observing .pet__emoji,
-.pet--observing .pet__image,
-.pet--observing .pet__video {
-  animation: observe 3s infinite ease-in-out;
 }
 
 @keyframes observe {
@@ -222,13 +148,6 @@
   }
 }
 
-/* 打哈欠动画 - 快速的伸展效果 */
-.pet--yawning .pet__emoji,
-.pet--yawning .pet__image,
-.pet--yawning .pet__video {
-  animation: yawn 2s ease-out;
-}
-
 @keyframes yawn {
   0% {
     transform: scale(1);
@@ -242,13 +161,6 @@
   100% {
     transform: scale(1);
   }
-}
-
-/* 伸展动画 - 拉伸效果 */
-.pet--stretching .pet__emoji,
-.pet--stretching .pet__image,
-.pet--stretching .pet__video {
-  animation: stretch 3s ease-in-out;
 }
 
 @keyframes stretch {
@@ -269,20 +181,6 @@
   }
 }
 
-/* 鼠标跟踪时的微妙倾斜动画 */
-.pet--following-mouse .pet__emoji,
-.pet--following-mouse .pet__image,
-.pet--following-mouse .pet__video {
-  transition: transform 0.3s ease-out;
-}
-
-/* 悬停效果增强 */
-.pet:hover:not(.pet--dragging):not(.pet--sleeping) .pet__emoji,
-.pet:hover:not(.pet--dragging):not(.pet--sleeping) .pet__image,
-.pet:hover:not(.pet--dragging):not(.pet--sleeping) .pet__video {
-  animation: hover-bounce 0.6s ease-out;
-}
-
 @keyframes hover-bounce {
   0% {
     transform: scale(1);
@@ -295,21 +193,6 @@
   }
 }
 
-/* 拖拽时的特殊效果 */
-.pet--dragging .pet__emoji,
-.pet--dragging .pet__image,
-.pet--dragging .pet__video {
-  transform: rotate(15deg) scale(1.1);
-  transition: none;
-}
-
-/* 空闲状态的微妙动画 */
-.pet--idle .pet__emoji,
-.pet--idle .pet__image,
-.pet--idle .pet__video {
-  animation: idle-breathe 6s infinite ease-in-out;
-}
-
 @keyframes idle-breathe {
   0%, 100% {
     transform: scale(1);
@@ -317,21 +200,6 @@
   50% {
     transform: scale(1.01);
   }
-}
-
-/* 道具系统相关样式 */
-
-/* 拖拽悬停效果 */
-.pet--dragover {
-  box-shadow: 0 0 20px rgba(74, 144, 226, 0.8);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
-}
-
-.pet--dragover .pet__emoji,
-.pet--dragover .pet__image,
-.pet--dragover .pet__video {
-  animation: dragover-pulse 1s infinite ease-in-out;
 }
 
 @keyframes dragover-pulse {
@@ -343,15 +211,6 @@
     transform: scale(1.05);
     filter: brightness(1.2);
   }
-}
-
-/* 道具状态动画 */
-
-/* 吃东西动画 */
-.pet--eating .pet__emoji,
-.pet--eating .pet__image,
-.pet--eating .pet__video {
-  animation: eating 2s ease-in-out;
 }
 
 @keyframes eating {
@@ -369,13 +228,6 @@
   }
 }
 
-/* 喝东西动画 */
-.pet--drinking .pet__emoji,
-.pet--drinking .pet__image,
-.pet--drinking .pet__video {
-  animation: drinking 1.5s ease-in-out;
-}
-
 @keyframes drinking {
   0%, 100% {
     transform: scale(1);
@@ -383,13 +235,6 @@
   50% {
     transform: scale(1.05) translateY(-3px);
   }
-}
-
-/* 玩耍动画 */
-.pet--playing .pet__emoji,
-.pet--playing .pet__image,
-.pet--playing .pet__video {
-  animation: playing 2s infinite ease-in-out;
 }
 
 @keyframes playing {
@@ -407,13 +252,6 @@
   }
 }
 
-/* 顽皮状态 */
-.pet--playful .pet__emoji,
-.pet--playful .pet__image,
-.pet--playful .pet__video {
-  animation: playful 1s infinite ease-in-out;
-}
-
 @keyframes playful {
   0%, 100% {
     transform: translateX(0) scale(1);
@@ -421,13 +259,6 @@
   50% {
     transform: translateX(5px) scale(1.02);
   }
-}
-
-/* 狩猎状态 */
-.pet--hunting .pet__emoji,
-.pet--hunting .pet__image,
-.pet--hunting .pet__video {
-  animation: hunting 1.5s ease-out;
 }
 
 @keyframes hunting {
@@ -445,13 +276,6 @@
   }
 }
 
-/* 放松状态 */
-.pet--relaxed .pet__emoji,
-.pet--relaxed .pet__image,
-.pet--relaxed .pet__video {
-  animation: relaxed 4s infinite ease-in-out;
-}
-
 @keyframes relaxed {
   0%, 100% {
     transform: scale(1);
@@ -459,13 +283,6 @@
   50% {
     transform: scale(1.02) translateY(-1px);
   }
-}
-
-/* 检查状态 */
-.pet--examining .pet__emoji,
-.pet--examining .pet__image,
-.pet--examining .pet__video {
-  animation: examining 2s ease-in-out;
 }
 
 @keyframes examining {
@@ -480,13 +297,6 @@
   }
 }
 
-/* 欣赏状态 */
-.pet--admiring .pet__emoji,
-.pet--admiring .pet__image,
-.pet--admiring .pet__video {
-  animation: admiring 3s ease-in-out;
-}
-
 @keyframes admiring {
   0%, 100% {
     transform: scale(1);
@@ -498,13 +308,6 @@
   }
 }
 
-/* 皇家状态 */
-.pet--royal .pet__emoji,
-.pet--royal .pet__image,
-.pet--royal .pet__video {
-  animation: royal 3s ease-in-out;
-}
-
 @keyframes royal {
   0%, 100% {
     transform: scale(1) translateY(0);
@@ -514,13 +317,6 @@
     transform: scale(1.1) translateY(-5px);
     filter: brightness(1.2) hue-rotate(30deg);
   }
-}
-
-/* 魔法状态 */
-.pet--magical .pet__emoji,
-.pet--magical .pet__image,
-.pet--magical .pet__video {
-  animation: magical 2s infinite ease-in-out;
 }
 
 @keyframes magical {
@@ -542,13 +338,6 @@
   }
 }
 
-/* 狂欢状态 */
-.pet--euphoric .pet__emoji,
-.pet--euphoric .pet__image,
-.pet--euphoric .pet__video {
-  animation: euphoric 1.5s infinite ease-in-out;
-}
-
 @keyframes euphoric {
   0%, 100% {
     transform: scale(1) rotate(0deg) translateY(0);
@@ -567,5 +356,3 @@
     filter: brightness(1.3) contrast(1.2) saturate(1.5);
   }
 }
-
-/* 气泡显示逻辑现在由React组件控制，不再依赖CSS类 */

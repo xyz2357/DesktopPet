@@ -138,6 +138,163 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
     };
   };
 
+  // 获取桌宠头像的动画样式
+  const getPetAvatarStyle = (): React.CSSProperties => {
+    const currentState = getPetState();
+    const baseStyle: React.CSSProperties = {
+      transition: 'transform 0.3s ease, filter 0.3s ease'
+    };
+
+    // 根据状态添加不同的动画
+    switch (currentState) {
+      case 'loading':
+        return {
+          ...baseStyle,
+          animation: 'bounce 1s infinite'
+        };
+      case 'active':
+        return {
+          ...baseStyle,
+          animation: 'pulse 2s infinite'
+        };
+      case 'congrats':
+        return {
+          ...baseStyle,
+          animation: 'celebrate 0.6s ease-in-out'
+        };
+      case 'walking':
+        return {
+          ...baseStyle,
+          animation: 'walk 2s infinite ease-in-out'
+        };
+      case 'sleeping':
+        return {
+          ...baseStyle,
+          animation: 'sleep 4s infinite ease-in-out',
+          opacity: 0.8
+        };
+      case 'observing':
+        return {
+          ...baseStyle,
+          animation: 'observe 3s infinite ease-in-out'
+        };
+      case 'yawning':
+        return {
+          ...baseStyle,
+          animation: 'yawn 2s ease-out'
+        };
+      case 'stretching':
+        return {
+          ...baseStyle,
+          animation: 'stretch 3s ease-in-out'
+        };
+      case 'eating':
+        return {
+          ...baseStyle,
+          animation: 'eating 2s ease-in-out'
+        };
+      case 'drinking':
+        return {
+          ...baseStyle,
+          animation: 'drinking 1.5s ease-in-out'
+        };
+      case 'playing':
+        return {
+          ...baseStyle,
+          animation: 'playing 2s infinite ease-in-out'
+        };
+      case 'playful':
+        return {
+          ...baseStyle,
+          animation: 'playful 1s infinite ease-in-out'
+        };
+      case 'hunting':
+        return {
+          ...baseStyle,
+          animation: 'hunting 1.5s ease-out'
+        };
+      case 'relaxed':
+        return {
+          ...baseStyle,
+          animation: 'relaxed 4s infinite ease-in-out'
+        };
+      case 'examining':
+        return {
+          ...baseStyle,
+          animation: 'examining 2s ease-in-out'
+        };
+      case 'admiring':
+        return {
+          ...baseStyle,
+          animation: 'admiring 3s ease-in-out'
+        };
+      case 'royal':
+        return {
+          ...baseStyle,
+          animation: 'royal 3s ease-in-out'
+        };
+      case 'magical':
+        return {
+          ...baseStyle,
+          animation: 'magical 2s infinite ease-in-out'
+        };
+      case 'euphoric':
+        return {
+          ...baseStyle,
+          animation: 'euphoric 1.5s infinite ease-in-out'
+        };
+      default:
+        if (isDragging) {
+          return {
+            ...baseStyle,
+            transform: 'rotate(15deg) scale(1.1)',
+            transition: 'none'
+          };
+        }
+        if (isHovered && !isDragging) {
+          return {
+            ...baseStyle,
+            animation: 'hover-bounce 0.6s ease-out'
+          };
+        }
+        if (isFollowingMouse) {
+          return {
+            ...baseStyle,
+            transition: 'transform 0.3s ease-out'
+          };
+        }
+        return {
+          ...baseStyle,
+          animation: 'idle-breathe 6s infinite ease-in-out'
+        };
+    }
+  };
+
+  // 获取桌宠容器的样式
+  const getPetContainerStyle = (): React.CSSProperties => {
+    const baseStyle: React.CSSProperties = {
+      left: position.x,
+      top: position.y,
+      width: mediaDimensions.width,
+      height: mediaDimensions.height,
+      transition: isDragging ? 'none' : 'all 0.3s ease',
+      zIndex: isDragging ? 9999 : 1001,
+      cursor: isDragging ? 'grabbing' : 'pointer'
+    };
+
+    // 拖拽悬停效果
+    if (isDraggedOver) {
+      return {
+        ...baseStyle,
+        boxShadow: '0 0 20px rgba(74, 144, 226, 0.8)',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, transparent 70%)'
+      };
+    }
+
+    return baseStyle;
+  };
+
   // 最近使用的道具跟踪
   const [lastUsedItem, setLastUsedItem] = useState<string | undefined>(undefined);
   const lastUsedItemTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -891,12 +1048,9 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
     <>
       <div
         ref={petElementRef}
-        className={`pet pet--${getPetState()} ${isDragging ? 'pet--dragging' : ''} ${isDraggedOver ? 'pet--dragover' : ''}`}
+        className="pet"
         style={{
-          left: position.x,
-          top: position.y,
-          width: mediaDimensions.width,
-          height: mediaDimensions.height,
+          ...getPetContainerStyle(),
           // 气泡样式 CSS 变量
           '--bubble-font-size': `${PetConfig.bubble.fontSize}px`,
           '--bubble-padding': `${PetConfig.bubble.padding[0]}px ${PetConfig.bubble.padding[1]}px`,
@@ -943,6 +1097,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
             <div 
               className="pet__emoji"
               style={{
+                ...getPetAvatarStyle(),
                 fontSize: Math.min(
                   mediaDimensions.width * PetConfig.interaction.emojiSizeRatio, 
                   mediaDimensions.height * PetConfig.interaction.emojiSizeRatio
@@ -959,6 +1114,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
                 if (!mediaFile) {
                   return (
                     <div className="pet__emoji" style={{
+                      ...getPetAvatarStyle(),
                       fontSize: Math.min(
                         mediaDimensions.width * PetConfig.interaction.emojiSizeRatio, 
                         mediaDimensions.height * PetConfig.interaction.emojiSizeRatio
@@ -976,6 +1132,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
                       ref={mediaRef as React.RefObject<HTMLVideoElement>}
                       src={mediaFile.url}
                       className="pet__video"
+                      style={getPetAvatarStyle()}
                       muted={PetConfig.media.video.muted}
                       loop={PetConfig.media.video.loop}
                       autoPlay={PetConfig.media.video.autoplay}
@@ -991,6 +1148,7 @@ const Pet: React.FC<PetProps> = ({ onClick, isActive, isLoading, isCongrats, onH
                       src={mediaFile.url} 
                       alt={`Pet ${getPetState()}`}
                       className="pet__image"
+                      style={getPetAvatarStyle()}
                       onError={() => handleMediaError(getPetState())}
                       onLoad={handleMediaLoad}
                     />

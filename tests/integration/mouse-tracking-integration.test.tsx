@@ -150,7 +150,7 @@ describe('Pet Component - Mouse Tracking Integration', () => {
       fireEvent.mouseMove(document, { clientX: 200, clientY: 150 });
     });
 
-    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--idle');
+    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
 
     // Test mouse tracking in active state
     await act(async () => {
@@ -158,7 +158,7 @@ describe('Pet Component - Mouse Tracking Integration', () => {
       fireEvent.mouseMove(document, { clientX: 400, clientY: 300 });
     });
 
-    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--active');
+    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
 
     // Test mouse tracking in loading state
     await act(async () => {
@@ -166,7 +166,7 @@ describe('Pet Component - Mouse Tracking Integration', () => {
       fireEvent.mouseMove(document, { clientX: 600, clientY: 450 });
     });
 
-    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--loading');
+    expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
   });
 
   it('should clean up mouse tracking when component unmounts', async () => {

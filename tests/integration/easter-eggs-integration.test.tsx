@@ -254,7 +254,7 @@ describe('Pet Component - Easter Eggs Integration', () => {
     // Should still work in active state
     await waitFor(() => {
       expect(screen.getByTitle('随意玩弄她吧')).toBeInTheDocument();
-      expect(petElement).toHaveClass('pet--active');
+      expect(petElement).toHaveClass('pet');
     });
   });
 

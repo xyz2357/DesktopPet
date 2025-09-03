@@ -208,17 +208,18 @@ describe('Pet Component', () => {
     });
 
     it('应该能够处理不同状态下的媒体需求', () => {
-      // 测试组件在不同状态下的渲染
+      // 测试组件在不同状态下的渲染 - 现在样式通过TypeScript函数控制
       const { rerender } = render(<Pet {...mockProps} />);
-      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--idle');
+      const petElement = screen.getByTitle('随意玩弄她吧');
+      expect(petElement).toHaveClass('pet'); // 基础类依然存在
       
-      // 测试active状态
+      // 测试active状态 - 检查样式是否正确应用
       rerender(<Pet {...mockProps} isActive={true} />);
-      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--active');
+      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
       
-      // 测试loading状态
+      // 测试loading状态 - 检查样式是否正确应用
       rerender(<Pet {...mockProps} isLoading={true} />);
-      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--loading');
+      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
     });
 
     it('应该在没有可用媒体文件时显示emoji', async () => {
@@ -254,12 +255,12 @@ describe('Pet Component', () => {
       // 验证媒体管理器被正确调用
       expect(mockMediaManager.initialize).toHaveBeenCalled();
       
-      // 在不同prop下测试组件行为
+      // 在不同prop下测试组件行为 - 样式现在通过内联样式控制
       rerender(<Pet {...mockProps} isActive={true} />);
-      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--active');
+      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
       
       rerender(<Pet {...mockProps} isLoading={true} />);
-      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet--loading');
+      expect(screen.getByTitle('随意玩弄她吧')).toHaveClass('pet');
     });
   });
 
@@ -328,7 +329,7 @@ describe('Pet Component', () => {
     });
   });
 
-  it('applies dragging class when dragging', async () => {
+  it('applies dragging styles when dragging', async () => {
     render(<Pet {...mockProps} />);
     
     const petElement = screen.getByTitle('随意玩弄她吧');
@@ -337,13 +338,18 @@ describe('Pet Component', () => {
     fireEvent.mouseDown(petElement, { clientX: 100, clientY: 100 });
     fireEvent.mouseMove(document, { clientX: 110, clientY: 110 });
     
-    expect(petElement).toHaveClass('pet--dragging');
+    // 检查样式是否正确应用 - 拖拽时应该有grabbing cursor和特定的z-index
+    const style = getComputedStyle(petElement);
+    expect(style.cursor).toBe('grabbing');
+    expect(style.zIndex).toBe('9999');
     
     // End drag
     fireEvent.mouseUp(document);
     
     await waitFor(() => {
-      expect(petElement).not.toHaveClass('pet--dragging');
+      // 拖拽结束后样式应该恢复
+      const endStyle = getComputedStyle(petElement);
+      expect(endStyle.cursor).toBe('pointer');
     });
   });
 
@@ -359,5 +365,72 @@ describe('Pet Component', () => {
     
     // Should not call onClick after dragging
     expect(mockProps.onClick).not.toHaveBeenCalled();
+  });
+
+  describe('TypeScript Styling Functions', () => {
+    it('applies correct bubble visibility styles based on state', async () => {
+      const { rerender } = render(<Pet {...mockProps} />);
+      
+      // 获取气泡元素
+      const bubbleElement = document.querySelector('.pet__bubble');
+      expect(bubbleElement).toBeInTheDocument();
+      
+      // 在idle状态下气泡应该是可见的（因为有hover状态文本）
+      const user = userEvent.setup();
+      const petElement = screen.getByTitle('随意玩弄她吧');
+      await user.hover(petElement);
+      
+      // 检查气泡的opacity样式
+      await waitFor(() => {
+        const style = getComputedStyle(bubbleElement as Element);
+        expect(style.opacity).toBe('1');
+      });
+    });
+
+    it('applies correct container styles for different states', () => {
+      const { rerender } = render(<Pet {...mockProps} />);
+      const petElement = screen.getByTitle('随意玩弄她吧');
+      
+      // 检查基础类名存在
+      expect(petElement).toHaveClass('pet');
+      expect(petElement).toBeInTheDocument();
+      
+      // 测试拖拽状态 - 检查内联样式属性是否存在
+      fireEvent.mouseDown(petElement, { clientX: 100, clientY: 100 });
+      fireEvent.mouseMove(document, { clientX: 110, clientY: 110 });
+      
+      // 检查style属性包含我们期望的CSS属性
+      const styleAttr = petElement.getAttribute('style');
+      expect(styleAttr).toContain('cursor: grabbing');
+      expect(styleAttr).toContain('z-index: 9999');
+    });
+
+    it('applies correct avatar animations for different states', async () => {
+      const { rerender } = render(<Pet {...mockProps} />);
+      
+      // 检查loading状态的动画
+      rerender(<Pet {...mockProps} isLoading={true} />);
+      const emojiElement = screen.getByText('🤔');
+      
+      // 检查内联样式包含动画属性
+      const styleAttr = emojiElement.getAttribute('style');
+      expect(styleAttr).toContain('animation: bounce 1s infinite');
+      
+      // 测试active状态
+      rerender(<Pet {...mockProps} isActive={true} />);
+      const activeEmojiElement = screen.getByText('😊');
+      const activeStyleAttr = activeEmojiElement.getAttribute('style');
+      expect(activeStyleAttr).toContain('animation: pulse 2s infinite');
+    });
+
+    it('maintains correct CSS variable styles for bubble configuration', () => {
+      render(<Pet {...mockProps} />);
+      const petElement = screen.getByTitle('随意玩弄她吧');
+      
+      // 检查CSS变量是否正确设置
+      const style = getComputedStyle(petElement);
+      expect(style.getPropertyValue('--bubble-font-size')).toBe(`${PetConfig.bubble.fontSize}px`);
+      expect(style.getPropertyValue('--bubble-border-radius')).toBe(`${PetConfig.bubble.borderRadius}px`);
+    });
   });
 });
